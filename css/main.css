@@ -1,0 +1,459 @@
+html {
+	width: 100%;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+	visibility:hidden;
+}
+
+body {
+	margin: 0;
+	background-color: #fff;
+	color: #000;
+}
+
+* {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: geometricPrecision;
+	box-sizing: border-box;
+}
+
+.cursor {
+	position: absolute;
+	width: 120px;
+	height: 120px;
+	transform-origin: 50% 50%;
+	z-index: 100;
+	cursor: pointer;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.cursor svg {
+	width: 100%;
+	height: 100%;
+}
+
+.header {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	background-color: #f4eae1;
+	overflow: hidden;
+	cursor:pointer;
+	-webkit-user-select: none;
+}
+
+.audio_button {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	display: -webkit-flex;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	right: 0;
+	bottom: 0;
+	width: 130px;
+	height: 130px;
+	margin: 30px;
+	cursor: pointer;
+}
+
+.audio_button img {
+	position: absolute;
+}
+
+.webgl_wrapper {
+	position: absolute;
+	width: 100%;
+	height: 100vh;
+}
+
+.noise {
+	position: absolute;
+	width: 100%;
+	height: 100vh;
+	background-image: url('../img/noise.png');
+	background-size: auto;
+	background-repeat: repeat;
+	mix-blend-mode: overlay;
+	opacity: .2;
+}
+
+canvas {
+	filter: blur(50px);
+	opacity: 0.7;
+}
+
+.site_intro_wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	display: -webkit-flex;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	width: 100%;
+	height: 100vh;
+	text-align: center;
+	display: none;
+	width: auto;
+	margin: 0 auto;
+}
+
+.audio_elect_wrapper {
+	position: relative;
+	display: inline-block;
+	padding-top: 20px;
+}
+
+.audio_elect_button {
+	display: inline-block;
+	font-family: 'roslindale';
+	font-size: 70px;
+	line-height: 60px;
+	text-transform: uppercase;
+	padding: 20px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.site_intro_message {
+	font-family: 'gt_america';
+	font-size: 14px;
+	line-height: 14px;
+	text-transform: uppercase;
+	padding-bottom: 30px;
+}
+
+.site_intro_question {
+	font-family: 'gt_america';
+	font-size: 16px;
+	line-height: 16px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.nav_wrapper {
+	position: fixed;
+	display: block;
+	width: 100%;
+	height: 60px;
+	font-family: 'gt_america';
+	font-size: 14px;
+	line-height: 14px;
+	text-transform: uppercase;
+	z-index: 2;
+	overflow: hidden;
+	padding: 30px;
+	color: #000;
+}
+
+.nav_button {
+	position: absolute;
+	display: block;
+	width: auto;
+	cursor: pointer;
+}
+
+.underline {
+	position: relative;
+	height: 1px;
+	width: 0;
+	background-color: #000;
+	pointer-events:none;
+}
+
+.work_button {
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%)
+}
+
+.info_button {
+	right: 40px;
+}
+
+.text_ani_wrap {
+	overflow: hidden;
+}
+
+.text_ani_body {
+	position: relative;
+	display: block;
+}
+
+.title_wrapper {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	display: -webkit-flex;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	width: 100%;
+	height: 100vh;
+	pointer-events: none;
+	mix-blend-mode: exclusion;
+}
+
+.title_inner {
+	position: relative;
+	display: block;
+	width: auto;
+	margin: 0 auto;
+	font-family: 'roslindale';
+	text-transform: uppercase;
+	font-size: 12.5vw;
+	line-height: 11.4vw;
+	color: #fff;
+}
+
+.title {
+
+}
+
+.instructions {
+	position: relative;
+	width: 100%;
+	height: 26px;
+	text-align: center;
+	font-family: 'EB Garamond';
+	font-size: 26px;
+	line-height: 26px;
+	text-transform: none;
+	margin-top: 30px;
+	overflow: hidden;
+	font-family: 'gt_america';
+	font-size: 16px;
+	line-height: 16px;
+	text-transform: uppercase;
+
+}
+
+.instructions_wrapper {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+	margin-bottom: 60px;
+}
+
+.work {
+	position: relative;
+	width: 100%;
+	height: auto;
+}
+
+.work_item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	display: -webkit-flex;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center;
+	width: 100%;
+	height: auto;
+	text-align: left;
+	overflow: hidden;
+}
+
+.work_item_inner {
+	position: relative;
+	display: block;
+	width: 100%;
+	max-width: 780px;
+	cursor: pointer;
+	padding: 30px;
+	border-bottom: 1px solid #eee;
+}
+
+.work_title {
+	font-family: 'roslindale';
+	font-size: 136px;
+	line-height: 126px;
+	padding-bottom: 25px;
+	margin-top: -25px;
+	pointer-events: none;
+}
+
+.work_org {
+	position: relative;
+	display: inline-block;
+	width: auto;
+	height: 18px;
+	font-family: 'gt_america';
+	font-size: 13px;
+	line-height: 13px;
+	text-transform: uppercase;
+	margin-bottom: 30px;
+}
+
+.work_org div {
+	position: relative;
+	display: block;
+	pointer-events: none;
+}
+
+.work_title div {
+	pointer-events: none;
+}
+
+.work_description {
+	position: relative;
+	display: block;
+	width: auto;
+	height: auto;
+	font-family: 'EB Garamond', sans-serif;
+	font-size: 22px;
+	line-height: 28px;
+	overflow: hidden;
+	margin-top: -10px;
+}
+
+.mobile_only_text{
+display:none;
+}
+
+.desktop_only_text{
+display:inline;
+}
+
+@font-face {
+	font-family: 'roslindale';
+	src: url('../fonts/roslindale/Roslindale-DisplayCondensedLight.woff2') format('woff2'), url('../fonts/roslindale/Roslindale-DisplayCondensedLight.woff') format('woff');
+	font-style: normal;
+	font-weight: 300;
+}
+
+@font-face {
+	font-family: 'gt_america';
+	src: url('../fonts/gt_america/GT-America-Extended-Medium.woff2') format('woff2'), url('../fonts/gt_america/GT-America-Extended-Medium.woff') format('woff');
+	font-style: normal;
+	font-weight: 300;
+}
+
+@media all and (min-width:1400px) {
+	.title_inner {
+		font-size: 170px;
+		line-height: 158px;
+	}
+}
+
+@media all and (max-width:1100px) {
+	.work_title {
+		font-size: 12.5vw;
+		line-height: 11vw;
+	}
+
+	.work_item_inner {
+		max-width: 75vw;
+	}
+}
+
+
+
+
+@media all and (max-width:768px) {
+.mobile_only_text{
+display:inline;
+}
+
+.desktop_only_text{
+display:none;
+}
+}
+
+
+
+
+@media all and (max-width:540px) {
+	.title_inner {
+		font-size: 24vw;
+		line-height: 20vw;
+		padding: 20px;
+	}
+    
+    canvas{
+    opacity:0.8;
+    }
+    
+	.header, .webgl_wrapper, .title_wrapper{
+		height:calc(100vh - 114px);
+	}
+
+	.instructions {
+		font-size: 14px;
+		line-height: 16px;
+		text-align: left;
+		height: auto;
+	}
+
+	.info_button {
+		right: 0;
+	}
+
+	.nav_wrapper {
+		padding: 0;
+		font-size: 13px;
+		line-height: 13px;
+	}
+	
+	.nav_button{
+	padding:20px;
+	}
+
+	.audio_button {
+		margin: 15px;
+				width: 110px;
+    height: 110px;
+	}
+	
+
+
+	.site_intro_question {
+		font-size: 13px;
+		line-height: 13px;
+	}
+
+	.work_item_inner {
+		max-width: 100%;
+		cursor: pointer;
+		padding: 0;
+		margin: 20px;
+		margin-bottom: 0;
+	}
+
+	.work_title {
+		font-size: 17.0vw;
+		line-height: 15vw;
+	}
+}
+
+@media all and (max-width:320px) {
+	.instructions {
+		font-size: 12px;
+		margin-top: 15px;
+	}
+
+	.audio_button {
+		margin: 10px;
+
+	}
+
+	.nav_wrapper {
+		font-size: 12px;
+		padding: 15px;
+	}
+
+	.info {
+		right: 15px;
+	}
+
+	.work_title {
+		font-size: 16.8vw;
+		line-height: 15vw;
+	}
+}
