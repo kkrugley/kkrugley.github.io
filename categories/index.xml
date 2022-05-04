@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Pavel Krugley Personal Site</title>
-    <link>https://kkrugley.online/categories/</link>
+    <link>https://kkrugley.github.io/categories/</link>
     <description>Recent content in Categories on Pavel Krugley Personal Site</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://kkrugley.online/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://kkrugley.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
