@@ -184,7 +184,7 @@ info_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/info.html';
+		window.location.href = 'info.html';
 	}, 1000);
 
 
