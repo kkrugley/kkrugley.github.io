@@ -200,7 +200,7 @@ medium_homepages_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/medium-homepages.html';
+		window.location.href = 'medium-homepages.html';
 	}, 1000);
 
 
@@ -215,7 +215,7 @@ medium_brand_redesign_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/medium-brand-redesign.html';
+		window.location.href = 'medium-brand-redesign.html';
 	}, 1000);
 
 
@@ -230,7 +230,7 @@ new_yorker_documentary_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/new-yorker-documentary.html';
+		window.location.href = 'new-yorker-documentary.html';
 	}, 1000);
 
 
@@ -245,7 +245,7 @@ new_yorker_cannabis_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/new-yorker-california-cannabis.html';
+		window.location.href = 'new-yorker-california-cannabis.html';
 	}, 1000);
 
 
@@ -261,7 +261,7 @@ new_yorker_moon_hours_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/new-yorker-moon-hours.html';
+		window.location.href = 'new-yorker-moon-hours.html';
 	}, 1000);
 
 
@@ -276,7 +276,7 @@ new_yorker_la_dreaming_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/new-yorker-la-dreaming.html';
+		window.location.href = 'new-yorker-la-dreaming.html';
 	}, 1000);
 
 
@@ -292,7 +292,7 @@ new_yorker_touchstones_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/new-yorker-touchstones.html';
+		window.location.href = 'new-yorker-touchstones.html';
 	}, 1000);
 
 
@@ -306,7 +306,7 @@ mtv_news_link.addEventListener('click', function() {
 	tl_transition01.play();
 
 	setTimeout(function() {
-		window.location.href = 'https://www.richardsancho.com/mtv-news.html';
+		window.location.href = 'mtv-news.html';
 	}, 1000);
 
 
