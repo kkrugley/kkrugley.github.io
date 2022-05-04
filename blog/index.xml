@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Pavel Krugley Personal Site</title>
-    <link>https://kkrugley.github.io/</link>
-    <description>Recent content on Pavel Krugley Personal Site</description>
+    <title>Blog on Pavel Krugley Personal Site</title>
+    <link>https://kkrugley.github.io/blog/</link>
+    <description>Recent content in Blog on Pavel Krugley Personal Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 04 May 2022 03:22:47 +0200</lastBuildDate><atom:link href="https://kkrugley.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 04 May 2022 03:13:47 +0200</lastBuildDate><atom:link href="https://kkrugley.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My first post</title>
       <link>https://kkrugley.github.io/blog/firstpost/</link>
@@ -31,17 +31,6 @@ Heading&amp;hellip;and after a heading.
 I just love bold text.
  Dorothy followed her through many of the beautiful rooms in her castle.
  </description>
-    </item>
-    
-    <item>
-      <title>Nomer 1</title>
-      <link>https://kkrugley.github.io/projects/myfirstproject/</link>
-      <pubDate>Wed, 04 May 2022 03:11:35 +0200</pubDate>
-      
-      <guid>https://kkrugley.github.io/projects/myfirstproject/</guid>
-      <description>Here&amp;rsquo;s a HeadingDon&amp;rsquo;t put tabs or spaces in front of your paragraphs.
-Keep lines left-aligned like this.
- First item Second item Third item  Indented item Indented item   Fourth item  </description>
     </item>
     
   </channel>
