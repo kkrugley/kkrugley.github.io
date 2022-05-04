@@ -323,7 +323,7 @@ display:inline;
 
 @font-face {
 	font-family: 'roslindale';
-	src: url('../fonts/roslindale/Roslindale-DisplayCondensed-Regular.woff2') format('woff2'), url('../fonts/roslindale/Roslindale-DisplayCondensed-Regular.woff') format('woff');
+	src: url('../fonts/roslindale/Roslindale-DisplayCondensedLight.woff2') format('woff2'), url('../fonts/roslindale/Roslindale-DisplayCondensedLight.woff') format('woff');
 	font-style: normal;
 	font-weight: 300;
 }
