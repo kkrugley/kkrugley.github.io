@@ -1,0 +1,204 @@
+@font-face {
+  font-family: "TimesNewArial";
+  src: url("../fonts/TimesNewArialVF.ttf") format("truetype-variations"), url("../fonts/TimesNewArialVF.woff") format("woff");
+  font-variation-settings: 'srff' 100, 'ital' 0, 'wght' 0;
+}
+
+html, body {
+  background: #fff;
+  z-index: 1;
+  padding: 0;
+  margin: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'TimesNewArial';
+  font-variation-settings: "srff" 0, "ital" 0, 'wght' 0;
+  font-size: 21px;
+  line-height: 24px;
+}
+
+a, button, input, label {
+  cursor: pointer;
+}
+
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul, li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 10px;
+  transform: rotate(-5deg);
+  transform-origin: center center;
+  width: calc(896px / 2);
+  height: calc(562px / 2);
+  background: white;
+  -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.3);
+  overflow: scroll;
+}
+
+.card .intro p {
+  font-size: 20px;
+  font-variation-settings: "srff" 100, "ital" 0, 'wght' 0;
+}
+
+.card p {
+  font-variation-settings: "srff" 0, "ital" 0, 'wght' 0;
+}
+
+.card1 {
+  margin-left: 1vw;
+}
+
+.legal p, .legal b {
+  margin-bottom: 1vw;
+}
+
+[ndx--preview="image"] {
+  opacity: .2;
+}
+
+iframe {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0;
+}
+
+iframe.active {
+  opacity: 1;
+}
+
+.image {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0;
+  background-size: cover;
+  background-position: top left;
+  pointer-events: none;
+}
+
+.image.active {
+  cursor: no-drop;
+  pointer-events: initial;
+  opacity: 1;
+}
+
+.previewvid {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  opacity: 0;
+  background-size: cover;
+  background-position: left top;
+  pointer-events: none;
+}
+
+.previewvid.active {
+  cursor: no-drop;
+  pointer-events: initial;
+  opacity: 1;
+}
+
+.loading {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: white;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s linear;
+}
+
+.loading.show {
+  opacity: 1;
+}
+
+.loading .load {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 1vw;
+  background: coral;
+  animation-duration: 3s;
+  animation-name: grow;
+}
+
+.loading .load.show {
+  display: block;
+}
+
+.loading .load.load1 {
+  background: lavender;
+}
+
+.loading .load.load2 {
+  background: lightblue;
+}
+
+.loading .load.load3 {
+  background: lightcoral;
+}
+
+.loading .load.load4 {
+  background: lightslategray;
+}
+
+.loading .load.load5 {
+  background: lightsteelblue;
+}
+
+.loading .load.load6 {
+  background: lightgoldenrodyellow;
+}
+
+@keyframes grow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100vw;
+  }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+  .card {
+    transform: rotate(95deg);
+  }
+}
+
+a.active {
+  color: red !important;
+}
