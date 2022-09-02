@@ -18,6 +18,13 @@ html, body {
   line-height: 24px;
 }
 
+a.text:active, /* активная/посещенная ссылка */
+a.text:hover,  /* при наведении */
+a.text {
+  text-decoration: none;
+  color: #000000;
+}
+
 a, button, input, label {
   cursor: pointer;
 }
