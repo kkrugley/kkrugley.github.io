@@ -18,8 +18,8 @@ html, body {
   line-height: 24px;
 }
 
-a.text:active, /* активная/посещенная ссылка */
-a.text:hover,  /* при наведении */
+a.text:active,
+a.text:hover,
 a.text {
   text-decoration: none;
   color: #000000;
