@@ -22,9 +22,16 @@ a, button, input, label {
   cursor: pointer;
 }
 
-a.text:active, a.text:hover, a.text {
-  text-decoration: none;
-  color: #000000;
+a { 
+    text-decoration: none;
+}
+
+a:hover { 
+    text-decoration: underline;
+}
+
+a:active { 
+    text-decoration: none;
 }
 
 *, *:after, *:before {
