@@ -23,15 +23,18 @@ a, button, input, label {
 }
 
 a { 
-    text-decoration: none;
+  text-decoration: none;
+  color: #000000;
 }
 
 a:hover { 
-    text-decoration: underline;
+  text-decoration: underline;
+  color: #000000;
 }
 
 a:active { 
-    text-decoration: none;
+  text-decoration: none;
+  color: #000000;
 }
 
 *, *:after, *:before {
