@@ -33,7 +33,7 @@
 <body>
   <h1>Stool Concept</h1>
   <div class="background">
-    <model-viewer id="modelViewer" alt="#" environment-image="../../assets/3d_assets/studio1neutral.hdr" poster="#" shadow-intensity="1" camera-controls touch-action="pan-y">
+    <model-viewer alt="#" environment-image="../../assets/3d_assets/studio1neutral.hdr" poster="№" shadow-intensity="1" camera-controls touch-action="pan-y">
       <button style="background-color: white;border-radius: 4px;border-width: 0px;border-color: #9d9d9d;position: absolute;bottom: 16px;right: 16px;width: 102px;height: 27px;box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);" slot="ar-button">
         👋 Activate AR
       </button>
@@ -45,11 +45,11 @@
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     // Изменение src в зависимости от типа устройства
-    var modelViewer = document.getElementById('modelViewer');
+    var modelViewer = document.querySelector('model-viewer');
     if (isIOS) {
-      modelViewer.src = "../../assets/3d_assets/stool.usdz";
+      modelViewer.setAttribute('src', '../../assets/3d_assets/stool.usdz');
     } else {
-      modelViewer.src = "../../assets/3d_assets/stool.glb";
+      modelViewer.setAttribute('src', '../../assets/3d_assets/stool.glb');
     }
   </script>
 </body>
