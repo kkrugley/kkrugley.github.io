@@ -18,18 +18,19 @@
       height: 100vh;
     }
 
-    .button {
+.button {
       background-color: white;
       border: none;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      color: black;
-      cursor: pointer;
-      font-size: 18px;
-      margin: 0 10px;
+      border-radius: 5px;
       padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
+      margin: 0 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+    }
+
+    .button:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     @media (max-width: 600px) {
