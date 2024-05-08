@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEB 1.0 Template</title>
+  <style>
+    /* Basic styles */
+    body {
+      font-family: "Times New Roman", Times, serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Set body height to at least full viewport height */
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 3rem;
+    }
+
+    .container {
+      max-width: 960px; /* Adjust as needed */
+      margin: 0 auto;
+      flex: 1; /* Expand container to fill remaining vertical space */
+    }
+    header {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .menu {
+        text-align: center; /* Центрируем элементы меню */
+        position: relative;
+    }
+
+    .gallery {
+      text-align: center;
+      margin-top: 20px;
+      position: relative;
+    }
+    .gallery img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .thumbnails {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .thumbnail {
+      margin: 0 5px; /* Decreased margin */
+      cursor: pointer;
+      width: 100px; /* Increased width */
+      height: auto;
+    }
+    .main-image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+    .description {
+      float: right;
+      width: 80%; /* Increased width */
+      margin-top: 50px;
+    }
+    .links {
+      float: left;
+      width: 20%; /* Decreased width */
+      margin-top: 50px;
+    }
+    .links ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .links li {
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: auto; /* Push footer to bottom */
+      width: 100%;
+      padding: 50px 0; /* Add padding for better appearance */
+    }
+
+    footer p {
+      color: #D3D3D3; /* Change text color */
+      font-style: italic;
+    }
+
+    /* Media queries */
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 0 20px; /* Add left and right padding */
+      }
+      .description, .links {
+        float: none;
+        width: 100%;
+        margin-top: 50px;
+      }
+      .links {
+	margin-top: 50px;
+        float: none;
+      }
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+      .container {
+        padding: 0 20px; /* Add left and right padding */
+      }
+      .description, .links {
+        float: none;
+        width: 100%;
+        margin-top: 50px;
+      }
+      .links {
+	margin-top: 50px;
+        float: none;
+      }
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>My Project nr1</h1>
+    </header>
+
+    <h3 class="menu">
+      [&nbsp;<a href="mailto:kkrugley@proton.me">E-mail Me</a>&nbsp;]&nbsp;
+      [&nbsp;<a href="/2">IDK what to write here</a>&nbsp;]&nbsp;
+      [&nbsp;<a href="../">Home</a>&nbsp;]&nbsp;
+    </h3>
+
+    <div class="gallery">
+      <img class="main-image" src="img/image1.png" alt="Main Image">
+      <div class="thumbnails">
+        <img class="thumbnail" src="img/image1.png" alt="Thumbnail 1">
+        <img class="thumbnail" src="img/image2.png" alt="Thumbnail 2">
+        <img class="thumbnail" src="img/image3.png" alt="Thumbnail 3">
+        <img class="thumbnail" src="img/image4.png" alt="Thumbnail 3">
+        <img class="thumbnail" src="img/image5.png" alt="Thumbnail 3">
+        <img class="thumbnail" src="img/image6.png" alt="Thumbnail 3">
+      </div>
+    </div>
+
+    <div class="description">
+      <h2>Description</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam mollis placerat convallis. Nunc ut est fringilla, dictum augue vehicula, aliquet orci. Duis fringilla accumsan odio tristique scelerisque. Maecenas tincidunt tempus tortor, vel dictum magna lacinia mollis. Etiam nec dictum augue. Sed tristique pretium accumsan. Vestibulum faucibus augue sed mi rhoncus interdum. Sed vestibulum dui id feugiat gravida. Nam at felis porta, eleifend tortor ac, consectetur dui. Aenean interdum elit sit amet augue elementum sagittis. Nam laoreet accumsan nisi, vel condimentum urna. Mauris sem nibh, iaculis sit amet odio porttitor, cursus luctus elit. Nullam interdum tellus eget urna tincidunt, ut vestibulum lacus aliquam. Integer imperdiet tempor ante, non elementum nunc mollis nec. Nam turpis nisl, dictum eget mattis vel, lacinia sed lorem.</p>
+
+      <p>Donec convallis ipsum et luctus luctus. Suspendisse potenti. Duis dictum, ante et volutpat posuere, erat dolor malesuada dolor, vel vulputate lectus augue sed odio. Morbi eleifend felis nec felis placerat, quis varius mi ultricies. Vivamus ornare, quam in euismod tincidunt, metus felis sagittis nunc, sit amet scelerisque magna sem ac nisi. Cras ac arcu egestas eros tempor feugiat. Aenean ullamcorper metus id tortor imperdiet lacinia.</p>
+
+      <p>Nulla non enim sed tortor faucibus viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam sollicitudin felis est, a elementum quam aliquam at. Proin dui ante, eleifend ut dictum in, euismod fringilla purus. In lacinia lorem viverra, molestie tortor non, varius diam. Nunc mattis eros a lacus semper dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Morbi nec dictum erat. Duis bibendum luctus lorem sed pulvinar. Curabitur eget nunc ac nibh fermentum tincidunt sit amet nec tellus. Vivamus volutpat, est sed elementum imperdiet, ligula lacus viverra mi, eu ornare mauris odio vel libero.</p>
+    </div>
+
+    <div class="links">
+      <h2>Links</h2>
+      <ul>
+        <li><a href="https://www.behance.net/gallery/163563717/Clothespin-Composition">Project on Behance</a></li>
+        <li><a href="#">какая-то еще ссылка</a></li>
+        <li><a href="https://www.linkedin.com/in/krugley/">Post on LinkedIn</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainImage = document.querySelector('.main-image');
+      const thumbnails = document.querySelectorAll('.thumbnail');
+      
+      thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+          mainImage.src = thumbnail.src;
+        });
+      });
+    });
+  </script>
+
+  <footer>
+    <p>&copy; Pavel Kruhlei - <span id="currentYear"></span></p>
+  </footer>
+
+  <script>
+    // Получаем текущий год
+    var currentYear = new Date().getFullYear();
+
+    // Вставляем текущий год в элемент с id="currentYear"
+    document.getElementById("currentYear").textContent = currentYear;
+  </script>
+
+</body>
+</html>
