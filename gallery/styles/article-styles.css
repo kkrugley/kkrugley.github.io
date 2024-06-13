@@ -93,13 +93,16 @@ body {
     .container {
       padding: 0 20px; /* Add left and right padding */
     }
+    h1 {
+      font-size: 2rem;
+    }
     .description, .links {
       float: none;
       width: 100%;
       margin-top: 50px;
     }
     .links {
-  margin-top: 50px;
+      margin-top: 50px;
       float: none;
     }
   }
@@ -114,7 +117,7 @@ body {
       margin-top: 50px;
     }
     .links {
-  margin-top: 50px;
+      margin-top: 50px;
       float: none;
     }
   }
