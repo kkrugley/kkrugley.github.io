@@ -1,0 +1,79 @@
+body {
+    font-family: Times New Roman;
+    background-color: #eeeeee;
+    margin: 0;
+    padding: 0;
+overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 50px; /* Отступ сверху для заголовка */
+    position: relative;
+    z-index: 2; /* Установка порядка отображения по оси Z */
+}
+
+.container {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    text-align: right;
+    padding: 10px;
+    width: 15%; /* Ширина блока в пикселях */
+}
+
+.container img {
+    max-width: 100%;
+    height: auto;
+}
+
+.container a {
+    text-decoration: underline; /* Добавляем подчеркивание для текста ссылки */
+    color: blue; /* Устанавливаем синий цвет для текста ссылки */
+    font-style: italic; /* Добавляем курсив */
+}
+
+/* Стили для ссылок в заголовке */
+.container h1 a {
+    text-decoration: none; /* Убираем подчеркивание у ссылок в заголовке */
+    color: black; /* Цвет текста ссылок в заголовке */
+}
+
+.menu {
+    text-align: center; /* Центрируем элементы меню */
+    position: relative;
+    z-index: 2; /* Установка порядка отображения по оси Z */
+}
+
+footer {
+    text-align: center; /* Центрируем текст в подвале */
+    margin-top: 20px; /* Добавляем отступ сверху */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+color: #D3D3D3; /* Устанавливаем серый цвет текста */
+font-style: italic; /* Добавляем курсив */
+}
+
+@media only screen and (max-width: 800px) {
+    .container {
+        width: 50%; /* Изменяем ширину блока для мобильных устройств */
+        margin: 5px; /* Изменяем отступы блока для мобильных устройств */
+    }
+    h1 {
+        font-size: 2rem; /* Изменяем размер заголовка для мобильных устройств */
+    }
+    .menu {
+        margin-top: 10px; /* Изменяем отступы элементов меню для мобильных устройств */
+    }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1024px) { /* Для iPad */
+    .container {
+        width: 50%; /* Изменяем ширину блока для iPad */
+    }
+}
