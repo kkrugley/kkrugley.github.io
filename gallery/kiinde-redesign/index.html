@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Renders for Kiinde's rebrending</title>
-  <link rel="stylesheet" href="styles/styles.css">
-  <script src="styles/script.js"></script>
+  <link rel="stylesheet" href="../styles/article-styles.css">
+  <script src="../styles/article-script.js"></script>
 
 </head>
 <body>
@@ -23,7 +23,7 @@
     </h3>
 
     <div class="gallery">
-      <img class="main-image" src="img/1.jpg" alt="Main Image">
+      <img class="main-image" src="img/1.jpg" data-src="img/1.jpg" alt="Main Image">
       <div class="thumbnails">
         <img class="thumbnail" src="img/1.jpg" alt="Thumbnail 1">
         <img class="thumbnail" src="img/2.jpg" alt="Thumbnail 2">
@@ -32,6 +32,14 @@
         <img class="thumbnail" src="img/5.jpg" alt="Thumbnail 3">
         
       </div>
+    </div>
+
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <span class="prev">&#10094;</span>
+      <span class="next">&#10095;</span>
+      <img class="modal-content" id="modalImg" src="img/1.jpg" alt="Modal Image">
+      <div id="caption"></div>
     </div>
 
     <div class="description">
