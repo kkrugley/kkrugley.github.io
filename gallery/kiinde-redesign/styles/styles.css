@@ -1,0 +1,119 @@
+body {
+    font-family: "Times New Roman", Times, serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Set body height to at least full viewport height */
+  }
+
+  h1 {
+      text-align: center;
+      font-size: 3rem;
+  }
+
+  .container {
+    max-width: 960px; /* Adjust as needed */
+    margin: 0 auto;
+    flex: 1; /* Expand container to fill remaining vertical space */
+  }
+  header {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .menu {
+      text-align: center; /* Центрируем элементы меню */
+      position: relative;
+  }
+
+  .gallery {
+    text-align: center;
+    margin-top: 20px;
+    position: relative;
+  }
+  .gallery img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .thumbnails {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .thumbnail {
+    margin: 0 5px; /* Decreased margin */
+    cursor: pointer;
+    width: 100px; /* Increased width */
+    height: auto;
+  }
+  .main-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+  }
+  .description {
+    float: right;
+    width: 80%; /* Increased width */
+    margin-top: 50px;
+  }
+  .links {
+    float: left;
+    width: 20%; /* Decreased width */
+    margin-top: 50px;
+  }
+  .links ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  .links li {
+    margin-bottom: 10px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: auto; /* Push footer to bottom */
+    width: 100%;
+    padding: 50px 0; /* Add padding for better appearance */
+  }
+
+  footer p {
+    color: #D3D3D3; /* Change text color */
+    font-style: italic;
+  }
+
+  /* Media queries */
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 0 20px; /* Add left and right padding */
+    }
+    .description, .links {
+      float: none;
+      width: 100%;
+      margin-top: 50px;
+    }
+    .links {
+  margin-top: 50px;
+      float: none;
+    }
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .container {
+      padding: 0 20px; /* Add left and right padding */
+    }
+    .description, .links {
+      float: none;
+      width: 100%;
+      margin-top: 50px;
+    }
+    .links {
+  margin-top: 50px;
+      float: none;
+    }
+  }
