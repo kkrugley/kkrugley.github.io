@@ -7,6 +7,19 @@ body {
   min-height: 100vh; /* Set body height to at least full viewport height */
 }
 
+a {
+  color: #0000EE; /* Цвет ссылки до посещения (стандартный синий) */
+  }
+  a:visited {
+  color: #0000EE; /* Цвет ссылки после посещения (в данном случае темно-фиолетовый) */
+  }
+  a:hover {
+  text-decoration: underline; /* Добавляем подчеркивание при наведении */
+  }
+  a:active {
+  color: #FF0000; /* Цвет ссылки во время нажатия */
+  }
+
 h1 {
   text-align: center;
   font-size: 3rem;
