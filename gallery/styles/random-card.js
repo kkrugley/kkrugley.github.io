@@ -19,7 +19,7 @@ var items = [
 ];
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    var numBlocks = 8; // number of cards
+    var numBlocks = 6; // number of cards
 
     for (var i = 0; i < numBlocks; i++) {
         var itemIndex = Math.floor(Math.random() * items.length); // random index from banch
