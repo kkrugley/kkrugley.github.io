@@ -119,17 +119,23 @@ footer p {
             newDiv.style.top = Math.floor(Math.random() * (window.innerHeight - 250)) + "px";
             newDiv.style.transform = "rotate(" + getRandomRotation() + "deg)";
 
+            var link = document.createElement("a");
+            link.href = item.linkUrl;
+
             var img = document.createElement("img");
             img.src = item.imageUrl;
             img.alt = "Image " + (i + 1);
 
-            var link = document.createElement("a");
-            link.href = item.linkUrl;
-            link.textContent = item.linkTitle;
+            link.appendChild(img);
 
-            newDiv.appendChild(img);
-            newDiv.appendChild(document.createElement("br"));
+            var textLink = document.createElement("a");
+            textLink.href = item.linkUrl;
+            textLink.textContent = item.linkTitle;
+
             newDiv.appendChild(link);
+            newDiv.appendChild(document.createElement("br"));
+            newDiv.appendChild(textLink);
+
 
             document.body.appendChild(newDiv);
 
