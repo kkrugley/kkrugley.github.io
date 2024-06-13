@@ -60,4 +60,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
      
      document.getElementById("currentYear").textContent = currentYear;
 
+     // Обработчик клика для ссылки с id "refresh-link"
+     document.getElementById("refresh-link").addEventListener("click", function(event) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+        location.reload(); // Обновляем страницу
+    });
 });
