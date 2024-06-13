@@ -3,12 +3,13 @@ body {
     background-color: #eeeeee;
     margin: 0;
     padding: 0;
-overflow: hidden;
+    overflow: hidden;
 }
 
 h1 {
     text-align: center;
     font-size: 3rem;
+    color: black;
     margin-top: 50px; /* Отступ сверху для заголовка */
     position: relative;
     z-index: 2; /* Установка порядка отображения по оси Z */
