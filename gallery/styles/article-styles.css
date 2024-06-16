@@ -64,8 +64,8 @@ header {
 .thumbnail {
   margin: 0 2px !important; /* Уменьшаем отступ между миниатюрами */
   cursor: pointer;
-  width: 100px !important;
-  height: auto !important;
+/*  width: auto !important; */
+  height: 80px !important;
 }
 
 .main-image {
