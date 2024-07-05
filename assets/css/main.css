@@ -267,7 +267,7 @@ a.active {
 }
 
 #clippy-tooltip {
-  margin-top: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   background-color: white;
   border: 1px solid #ccc;
@@ -275,6 +275,12 @@ a.active {
   border-radius: 5px;
   font-size: 14px;
   text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+#clippy-tooltip.visible {
+  opacity: 1;
 }
 
 #clippy-tooltip a {
@@ -284,5 +290,13 @@ a.active {
 
 #clippy-tooltip a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  #clippy-container {
+    bottom: 20px;
+    right: auto;
+    left: 20px;
+  }
 }
 /* clippy end */

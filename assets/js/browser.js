@@ -62,9 +62,13 @@ css_browser_selector(navigator.userAgent);
 
 document.addEventListener("DOMContentLoaded", function() {
     setTimeout(function() {
-        var clippyContainer = document.getElementById("clippy-container");
-        if (clippyContainer) {
-            clippyContainer.classList.add("visible");
-        }
-    }, 2000); // 1 секунда
-});
+      var clippyContainer = document.getElementById("clippy-container");
+      clippyContainer.classList.add("visible");
+      
+      setTimeout(function() {
+        var clippyTooltip = document.getElementById("clippy-tooltip");
+        clippyTooltip.classList.add("visible");
+      }, 1000); // 0.5 секунды после появления скрепки
+    }, 1500); // 1 секунда
+  });
+  
