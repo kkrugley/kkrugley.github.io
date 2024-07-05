@@ -66,5 +66,5 @@ document.addEventListener("DOMContentLoaded", function() {
         if (clippyContainer) {
             clippyContainer.classList.add("visible");
         }
-    }, 1000); // 1 секунда
+    }, 2000); // 1 секунда
 });
