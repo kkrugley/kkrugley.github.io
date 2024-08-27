@@ -51,16 +51,20 @@ header {
 }
 
 .gallery-images {
-  width: 74%; /* Оба блока занимают по 49% ширины */
+  width: 70%; /* Галерея занимает 70% ширины */
 }
 
 .iframe-container {
-  width: 25%;
+  width: 30%; /* Блок с iframe занимает 30% ширины */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .iframe-container iframe {
   width: 100%;
-  height: 100%;
+  height: 100%; /* Высота iframe заполняет контейнер */
+  min-height: 400px; /* Минимальная высота для iframe */
   border: none; /* Убираем границу */
 }
 
