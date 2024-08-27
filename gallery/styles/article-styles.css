@@ -50,8 +50,12 @@ header {
   margin-top: 20px;
 }
 
-.gallery-images, .iframe-container {
-  width: 49%; /* Оба блока занимают по 49% ширины */
+.gallery-images {
+  width: 74%; /* Оба блока занимают по 49% ширины */
+}
+
+.iframe-container {
+  width: 25%;
 }
 
 .iframe-container iframe {
