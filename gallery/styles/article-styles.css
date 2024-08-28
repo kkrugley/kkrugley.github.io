@@ -85,6 +85,28 @@ header {
   margin-top: 20px;
 }
 
+.image-column {
+  max-width: 100%;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.content-image-left {
+  float: left;
+  width: 49%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  margin-bottom: 20px
+}
+
+.content-image-right {
+  float: right;
+  width: 49%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .description {
   float: right;
   width: 80%; /* Increased width */
