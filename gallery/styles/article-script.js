@@ -94,3 +94,40 @@ document.addEventListener('DOMContentLoaded', function() {
   var currentYear = new Date().getFullYear();
   document.getElementById("currentYear").textContent = currentYear;
 });
+
+  const modal3D = document.getElementById("my3DModal");
+  const btn3D = document.getElementById("open3DModal");
+  const close3D = modal3D.getElementsByClassName("close")[0];
+  const modelViewer = document.getElementById("modelViewerElement");
+
+  // Открываем модальное окно с 3D моделью
+  btn3D.addEventListener('click', function(event) {
+    event.preventDefault();  // Предотвращаем переход по ссылке
+    console.log("3D Modal Open Clicked"); // Лог для проверки клика
+    modal3D.style.display = "block";
+    
+    // Перерисовываем model-viewer
+    modelViewer.requestUpdate();
+  });
+
+  // Закрываем модальное окно с 3D моделью при клике на крестик
+  close3D.addEventListener('click', function() {
+    console.log("3D Modal Close Clicked"); // Лог для проверки клика на крестик
+    modal3D.style.display = "none";
+  });
+
+  // Закрываем модальное окно с 3D моделью при клике вне его области
+  window.addEventListener('click', function(event) {
+    if (event.target == modal3D) {
+      console.log("3D Modal Click Outside"); // Лог для проверки клика вне окна
+      modal3D.style.display = "none";
+    }
+  });
+
+  // Закрываем модальное окно с 3D моделью при нажатии на Esc
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      console.log("3D Modal Esc Key Pressed"); // Лог для проверки нажатия Esc
+      modal3D.style.display = "none";
+    }
+  });
