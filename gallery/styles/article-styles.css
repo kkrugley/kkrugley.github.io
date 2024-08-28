@@ -77,6 +77,14 @@ header {
   max-height: 400px; /* высота главного изображения */
 }
 
+.content-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
 .description {
   float: right;
   width: 80%; /* Increased width */
