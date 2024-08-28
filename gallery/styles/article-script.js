@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Установка текущего года
   var currentYear = new Date().getFullYear();
   document.getElementById("currentYear").textContent = currentYear;
-});
+
 
   const modal3D = document.getElementById("my3DModal");
   const btn3D = document.getElementById("open3DModal");
@@ -131,3 +131,4 @@ document.addEventListener('DOMContentLoaded', function() {
       modal3D.style.display = "none";
     }
   });
+});
