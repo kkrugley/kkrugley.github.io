@@ -14,11 +14,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="white">
   <meta name="apple-mobile-web-app-title" content="who">
  <!--  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.0.1/model-viewer.min.js"></script> -->
-  <script src="assets/js/browser.js"></script>
   <link href="assets/css/main.css" rel="stylesheet">
 </head>
 
 <body>
+  <canvas id="wallpaper"></canvas><!--background-->
 <!-- 
 	<div class="background">
 	<model-viewer alt="Simple Torus Test 3D Viewer" src="assets/3d_assets/torus.glb" ar environment-image="assets/3d_assets/studio.hdr" poster="#" shadow-intensity="0" camera-controls touch-action="pan-y"></model-viewer>
@@ -45,5 +45,8 @@
       </div>
     </div>
     <a rel="me" href="https://mastodon.social/@krutoj_perec" style="display: none;">Mastodon</a>
+    
+    <script src="assets/background_generator/background_script.js"></script><!--background generator-->
+    <script src="assets/js/browser.js"></script>
   </body>
 </html>

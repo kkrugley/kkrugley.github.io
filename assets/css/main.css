@@ -26,6 +26,10 @@ div.background {
   height: 200%;
 }
 
+canvas {
+  display: block;
+}
+
 model-viewer {
   position: absolute;
   top: 0;
