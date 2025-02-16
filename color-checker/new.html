@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Compatibility Checker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .color-block {
+            width: 120px;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 10px;
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+        .color-block:hover {
+            transform: translateY(-5px);
+        }
+        .color-block canvas {
+            width: 100%;
+            height: 100px;
+            border-radius: 4px;
+        }
+        .notification {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="d-flex flex-wrap justify-content-center">
+            <!-- Color Blocks -->
+            <div class="color-block" id="block1">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(1)">Set as Main</button>
+                <input type="text" class="form-control mt-2" placeholder="#FFFFFF" maxlength="7" onchange="updateColor(1)">
+            </div>
+            <div class="color-block" id="block2">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(2)">Set as Main</button>
+                <input type="text" class="form-control mt-2" placeholder="#FFFFFF" maxlength="7" onchange="updateColor(2)">
+            </div>
+            <div class="color-block" id="block3">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(3)">Set as Main</button>
+                <input type="text" class="form-control mt-2" placeholder="#FFFFFF" maxlength="7" onchange="updateColor(3)">
+            </div>
+            <div class="color-block" id="block4">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(4)">Set as Main</button>
+                <input type="text" class="form-control mt-2" placeholder="#FFFFFF" maxlength="7" onchange="updateColor(4)">
+            </div>
+            <div class="color-block" id="block5">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(5)">Set as Main</button>
+                <input type="text" class="form-control mt-2" placeholder="#FFFFFF" maxlength="7" onchange="updateColor(5)">
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="mt-4">
+            <select class="form-select d-inline-block w-auto me-2" id="schemeSelector">
+                <option value="analogous">Analogous</option>
+                <option value="monochromatic">Monochromatic</option>
+                <option value="triad">Triad</option>
+                <option value="complementary">Complementary</option>
+                <option value="split-complementary">Split Complementary</option>
+                <option value="square">Square</option>
+                <option value="compound">Compound</option>
+                <option value="shades">Shades</option>
+            </select>
+            <button class="btn btn-secondary" id="checkButton" onclick="checkCompatibility()" disabled>Check</button>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script>
+        let colors = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+        let mainColorIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize random colors for each block
+            for (let i = 0; i < colors.length; i++) {
+                colors[i] = getRandomColor();
+                updateCanvas(i + 1);
+            }
+        });
+
+        function getRandomColor() {
+            return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+        }
+
+        function updateCanvas(index) {
+            const canvas = document.querySelector(`#block${index} canvas`);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = colors[index - 1];
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            validateColors();
+        }
+
+        function updateColor(index) {
+            const input = document.querySelector(`#block${index} input`).value.trim();
+            if (/^#([0-9A-F]{3}){1,2}$/i.test(input)) {
+                colors[index - 1] = input;
+                updateCanvas(index);
+            } else {
+                colors[index - 1] = "#FFFFFF";
+                updateCanvas(index);
+            }
+        }
+
+        function setMainColor(index) {
+            mainColorIndex = index - 1;
+        }
+
+        function validateColors() {
+            const validCount = colors.filter(color => /^#([0-9A-F]{3}){1,2}$/i.test(color)).length;
+            document.getElementById('checkButton').disabled = validCount < 2;
+        }
+
+        function checkCompatibility() {
+            const scheme = document.getElementById('schemeSelector').value;
+            const notification = document.getElementById('notification');
+            // Simple example of compatibility check
+            if (scheme === "analogous" && mainColorIndex !== null) {
+                notification.textContent = "Colors are compatible!";
+                notification.className = "notification bg-success text-white";
+            } else {
+                notification.textContent = "Colors adjusted to match scheme!";
+                notification.className = "notification bg-danger text-white";
+            }
+            notification.style.display = "block";
+        }
+    </script>
+</body>
+</html>

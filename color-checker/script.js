@@ -1,286 +1,294 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const colorBlocksContainer = document.querySelector('.color-blocks');
-    const checkButton = document.getElementById('check-button');
-    const notification = document.getElementById('notification');
-    const colorHarmonySelect = document.getElementById('color-harmony');
-  
-    const colors = [];
-    let mainColorIndex = null;
-  
-    // Function to generate a random HEX color
-    function getRandomHexColor() {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+let colors = [];
+let mainColorIndex = 0;
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Генерация 5 блоков с уникальными случайными HEX-кодами
+  for (let i = 0; i < 5; i++) {
+    let color = getRandomColor();
+    colors.push(color);
+    updateCanvas(i + 1);
+    document.querySelector(`#block${i + 1} .hex-input`).value = color;
+  }
+  validateColors(); // Всегда активна кнопка
+});
+
+// Генерация случайного HEX-кода
+function getRandomColor() {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+}
+
+// Обновление цвета canvas для блока с заданным индексом
+function updateCanvas(index) {
+  const canvas = document.querySelector(`#block${index} canvas`);
+  const ctx = canvas.getContext("2d");
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  ctx.fillStyle = colors[index - 1];
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+// Обработка ввода HEX-кода (обновление в реальном времени)
+function updateColor(index) {
+  const input = document.querySelector(`#block${index} .hex-input`);
+  const value = input.value.trim();
+  if (/^#([0-9A-F]{3}){1,2}$/i.test(value)) {
+    colors[index - 1] = value;
+  } else {
+    colors[index - 1] = "#FFFFFF";
+  }
+  updateCanvas(index);
+  validateColors();
+}
+
+// Выбор главного цвета с визуальным выделением
+function setMainColor(index) {
+  document.querySelectorAll(".color-block").forEach(block =>
+    block.classList.remove("main-color")
+  );
+  mainColorIndex = index - 1;
+  document.getElementById(`block${index}`).classList.add("main-color");
+}
+
+// Кнопка всегда активна – валидация не блокирует проверку
+function validateColors() {
+  document.getElementById("checkButton").disabled = false;
+}
+
+// Проверка совместимости и коррекция цветов по выбранной схеме
+function checkCompatibility() {
+  const scheme = document.getElementById("schemeSelector").value;
+  const mainHSL = hexToHSL(colors[mainColorIndex]); // h в [0,1]
+  let j = 0; // счетчик для блоков, не являющихся главным
+
+  switch (scheme) {
+    case "analogous": {
+      // Смещения: -30, -15, 15, 30 градусов
+      const offsets = [-30, -15, 15, 30];
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let mainHueDegrees = mainHSL.h * 360;
+        let newHueDegrees = (mainHueDegrees + offsets[j] + 360) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-      return color;
+      showNotification("Аналоговая схема применена!", "success");
+      break;
     }
-  
-    // Function to create a color block
-    function createColorBlock(index) {
-      const block = document.createElement('div');
-      block.className = 'color-block';
-  
-      // Canvas
-      const canvas = document.createElement('canvas');
-      canvas.width = 100;
-      canvas.height = 50;
-      const ctx = canvas.getContext('2d');
-      const initialColor = getRandomHexColor();
-      ctx.fillStyle = initialColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      block.appendChild(canvas);
-  
-      // "Make Main" label
-      const makeMain = document.createElement('div');
-      makeMain.className = 'make-main';
-      makeMain.textContent = 'сделать главным';
-      makeMain.onclick = () => setMainColor(index); // Set the main color on click
-      block.appendChild(makeMain);
-  
-      // Input
-      const inputGroup = document.createElement('div');
-      inputGroup.className = 'input-group';
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.maxLength = 7;
-      input.placeholder = '#FFFFFF';
-      input.value = initialColor; // Set initial random color
-      input.className = 'form-control form-control-sm';
-      input.addEventListener('input', () => updateColor(index));
-      inputGroup.appendChild(input);
-      block.appendChild(inputGroup);
-  
-      colorBlocksContainer.appendChild(block);
-  
-      colors.push({ canvas, ctx, input, color: initialColor });
-    }
-  
-    // Generate 5 color blocks
-    for (let i = 0; i < 5; i++) {
-      createColorBlock(i);
-    }
-  
-    // Update color on input change
-    function updateColor(index) {
-      const value = colors[index].input.value;
-      if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)) {
-        colors[index].color = value;
-        colors[index].ctx.fillStyle = value;
-        colors[index].ctx.fillRect(0, 0, colors[index].canvas.width, colors[index].canvas.height);
-      } else {
-        colors[index].ctx.fillStyle = '#ffffff';
-        colors[index].ctx.fillRect(0, 0, colors[index].canvas.width, colors[index].canvas.height);
+    case "monochromatic": {
+      // Изменение яркости: варианты -0.2, -0.1, +0.1, +0.2
+      const offsets = [-0.2, -0.1, 0.1, 0.2];
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let newL = mainHSL.l + offsets[j];
+        newL = Math.min(Math.max(newL, 0), 1);
+        colors[i] = HSLToHex(mainHSL.h, mainHSL.s, newL);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-      updateCheckButtonState();
+      showNotification("Монохромная схема применена!", "success");
+      break;
     }
-  
-    // Enable/disable the "Check" button
-    function updateCheckButtonState() {
-      const validColors = colors.filter(color => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color.input.value));
-      checkButton.disabled = validColors.length < 2;
-      checkButton.classList.toggle('btn-primary', validColors.length >= 2);
-      checkButton.classList.toggle('btn-secondary', validColors.length < 2);
+    case "triad": {
+      // Альтернирование между mainHue+120 и mainHue+240
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let offset = (j % 2 === 0) ? 120 : 240;
+        let newHueDegrees = (mainHSL.h * 360 + offset) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
+      }
+      showNotification("Триадная схема применена!", "success");
+      break;
     }
-  
-    // Set or update the main color
-    function setMainColor(index) {
-      // If the same block is clicked again, do nothing
-      if (mainColorIndex === index) return;
-  
-      // Reset previous main color
-      if (mainColorIndex !== null) {
-        colors[mainColorIndex].input.style.backgroundColor = ''; // Remove highlight
+    case "complementary": {
+      // Чередование: для неглавных – один оставляем основной, другой – комплементарный (mainHue+180)
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let offset = (j % 2 === 0) ? 0 : 180;
+        let newHueDegrees = (mainHSL.h * 360 + offset) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-  
-      // Set new main color
-      mainColorIndex = index;
-      colors[mainColorIndex].input.style.backgroundColor = '#e9ecef'; // Highlight the new main color
+      showNotification("Комплементарная схема применена!", "success");
+      break;
     }
-  
-    // Check color compatibility
-    checkButton.addEventListener('click', () => {
-      const validColors = colors
-        .map((color, index) => ({ color: color.color, index }))
-        .filter(({ color }) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color));
-  
-      if (!mainColorIndex) {
-        alert('Выберите главный цвет!');
-        return;
+    case "split-complementary": {
+      // Альтернируем между (mainHue+180-30) и (mainHue+180+30)
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let offset = (j % 2 === 0) ? -30 : 30;
+        let newHueDegrees = (mainHSL.h * 360 + 180 + offset + 360) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-  
-      const harmonyType = colorHarmonySelect.value;
-      const areCompatible = areColorsCompatible(validColors.map(c => c.color), harmonyType);
-  
-      if (areCompatible) {
-        notification.className = 'notification success';
-        notification.textContent = 'Все указанные цвета являются совместимыми!';
-      } else {
-        adjustColors(validColors, harmonyType);
-        notification.className = 'notification error';
-        notification.textContent = 'Цвета были скорректированы для совместимости.';
-      }
-    });
-  
-    // Convert HEX to HSL
-    function hexToHsl(hex) {
-      let r = parseInt(hex.slice(1, 3), 16) / 255;
-      let g = parseInt(hex.slice(3, 5), 16) / 255;
-      let b = parseInt(hex.slice(5, 7), 16) / 255;
-  
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      let h, s, l = (max + min) / 2;
-  
-      if (max === min) {
-        h = s = 0; // achromatic
-      } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-          case r:
-            h = (g - b) / d + (g < b ? 6 : 0);
-            break;
-          case g:
-            h = (b - r) / d + 2;
-            break;
-          case b:
-            h = (r - g) / d + 4;
-            break;
-        }
-        h /= 6;
-      }
-  
-      return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+      showNotification("Сплит-комплементарная схема применена!", "success");
+      break;
     }
-  
-    // Convert HSL to HEX
-    function hslToHex(h, s, l) {
-      h /= 360;
-      s /= 100;
-      l /= 100;
-  
-      let r, g, b;
-      if (s === 0) {
-        r = g = b = l; // achromatic
-      } else {
-        const hue2rgb = (p, q, t) => {
-          if (t < 0) t += 1;
-          if (t > 1) t -= 1;
-          if (t < 1 / 6) return p + (q - p) * 6 * t;
-          if (t < 1 / 2) return q;
-          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-          return p;
-        };
-  
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        const p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1 / 3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1 / 3);
+    case "square": {
+      // Смещения: +90, +180, +270, +360 (последнее совпадает с основным)
+      const offsets = [90, 180, 270, 360];
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let newHueDegrees = (mainHSL.h * 360 + offsets[j]) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-  
-      const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
-      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+      showNotification("Квадратная схема применена!", "success");
+      break;
     }
-  
-    // Check compatibility based on harmony type
-    function areColorsCompatible(colorArray, harmonyType) {
-      if (!mainColorIndex) {
-        alert('Выберите главный цвет!');
-        return false;
+    case "compound": {
+      // Комплексная схема: берем комплементарный цвет (mainHue+180) и добавляем смещения -30, 30, -15, 15
+      const offsets = [-30, 30, -15, 15];
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let compHueDegrees = (mainHSL.h * 360 + 180) % 360;
+        let newHueDegrees = (compHueDegrees + offsets[j] + 360) % 360;
+        let newHue = newHueDegrees / 360;
+        colors[i] = HSLToHex(newHue, mainHSL.s, mainHSL.l);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-  
-      const mainColor = hexToHsl(colors[mainColorIndex].color);
-      const compatibleColors = [];
-  
-      switch (harmonyType) {
-        case 'analogous':
-          compatibleColors.push(
-            hslToHex((mainColor.h + 30) % 360, mainColor.s, mainColor.l),
-            hslToHex((mainColor.h - 30 + 360) % 360, mainColor.s, mainColor.l)
-          );
-          break;
-        case 'complementary':
-          compatibleColors.push(hslToHex((mainColor.h + 180) % 360, mainColor.s, mainColor.l));
-          break;
-        case 'triad':
-          compatibleColors.push(
-            hslToHex((mainColor.h + 120) % 360, mainColor.s, mainColor.l),
-            hslToHex((mainColor.h + 240) % 360, mainColor.s, mainColor.l)
-          );
-          break;
-        case 'split-complementary':
-          compatibleColors.push(
-            hslToHex((mainColor.h + 150) % 360, mainColor.s, mainColor.l),
-            hslToHex((mainColor.h + 210) % 360, mainColor.s, mainColor.l)
-          );
-          break;
-        case 'square':
-          compatibleColors.push(
-            hslToHex((mainColor.h + 90) % 360, mainColor.s, mainColor.l),
-            hslToHex((mainColor.h + 180) % 360, mainColor.s, mainColor.l),
-            hslToHex((mainColor.h + 270) % 360, mainColor.s, mainColor.l)
-          );
-          break;
-        case 'monochromatic':
-          compatibleColors.push(
-            hslToHex(mainColor.h, mainColor.s, Math.min(mainColor.l + 20, 100)),
-            hslToHex(mainColor.h, mainColor.s, Math.max(mainColor.l - 20, 0))
-          );
-          break;
-        default:
-          console.log(`Unknown harmony type: ${harmonyType}`);
-          return false;
-      }
-  
-      // Check if all colors match the compatible colors
-      return colorArray.every(color => compatibleColors.includes(color));
+      showNotification("Комплексная схема применена!", "success");
+      break;
     }
-  
-    // Adjust colors to match the selected harmony
-    function adjustColors(colorArray, harmonyType) {
-      if (!mainColorIndex) {
-        alert('Выберите главный цвет!');
-        return;
+    case "shades": {
+      // Оттенки: уменьшаем яркость для каждого неглавного блока
+      for (let i = 0; i < colors.length; i++) {
+        if (i === mainColorIndex) continue;
+        let newL = mainHSL.l - 0.15 * (j + 1);
+        if (newL < 0) newL = 0;
+        colors[i] = HSLToHex(mainHSL.h, mainHSL.s, newL);
+        updateCanvas(i + 1);
+        document.querySelector(`#block${i + 1} .hex-input`).value = colors[i];
+        j++;
       }
-  
-      const mainColor = hexToHsl(colors[mainColorIndex].color);
-  
-      colorArray.forEach(({ index }) => {
-        if (index === mainColorIndex) return; // Skip the main color
-  
-        let newColor;
-        switch (harmonyType) {
-          case 'analogous':
-            newColor = hslToHex((mainColor.h + 30) % 360, mainColor.s, mainColor.l);
-            break;
-          case 'complementary':
-            newColor = hslToHex((mainColor.h + 180) % 360, mainColor.s, mainColor.l);
-            break;
-          case 'triad':
-            newColor = hslToHex((mainColor.h + 120) % 360, mainColor.s, mainColor.l);
-            break;
-          case 'split-complementary':
-            newColor = hslToHex((mainColor.h + 150) % 360, mainColor.s, mainColor.l);
-            break;
-          case 'square':
-            newColor = hslToHex((mainColor.h + 90) % 360, mainColor.s, mainColor.l);
-            break;
-          case 'monochromatic':
-            newColor = hslToHex(mainColor.h, mainColor.s, Math.min(mainColor.l + 20, 100));
-            break;
-          default:
-            console.log(`Unknown harmony type: ${harmonyType}`);
-            return;
-        }
-  
-        // Update the color in the UI
-        colors[index].color = newColor;
-        colors[index].input.value = newColor;
-        colors[index].ctx.fillStyle = newColor;
-        colors[index].ctx.fillRect(0, 0, colors[index].canvas.width, colors[index].canvas.height);
-      });
+      showNotification("Оттенки применены!", "success");
+      break;
     }
+    default: {
+      showNotification("Неизвестная схема!", "error");
+      break;
+    }
+  }
+}
+
+// Отображение уведомления с плавным появлением/исчезновением
+function showNotification(message, type) {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  notification.className = "notification mt-3 " + (type === "success" ? "bg-success text-white" : "bg-danger text-white");
+  notification.style.display = "block";
+  setTimeout(() => {
+    notification.classList.add("show");
+  }, 10);
+  setTimeout(() => {
+    notification.classList.remove("show");
+    setTimeout(() => {
+      notification.style.display = "none";
+    }, 500);
+  }, 3000);
+}
+
+// Копирование HEX-кода в буфер обмена
+function copyToClipboard(index) {
+  const hexValue = document.querySelector(`#block${index} .hex-input`).value;
+  navigator.clipboard.writeText(hexValue).then(() => {
+    alert("HEX код скопирован: " + hexValue);
   });
+}
+
+/* --- Функции конвертации между HEX, RGB и HSL --- */
+
+// HEX -> RGB
+function hexToRGB(hex) {
+  hex = hex.replace(/^#/, '');
+  if (hex.length === 3) {
+    hex = hex.split('').map(c => c + c).join('');
+  }
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return { r, g, b };
+}
+
+// RGB -> HSL
+function RGBToHSL(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+  if (max === min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch(max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+  return { h, s, l };
+}
+
+// HSL -> RGB
+function HSLToRGB(h, s, l) {
+  let r, g, b;
+  if(s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p, q, t) => {
+      if(t < 0) t += 1;
+      if(t > 1) t -= 1;
+      if(t < 1/6) return p + (q - p) * 6 * t;
+      if(t < 1/2) return q;
+      if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+  return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+}
+
+// RGB -> HEX
+function RGBToHex(r, g, b) {
+  return "#" + [r, g, b].map(x => {
+    const hex = x.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+  }).join('');
+}
+
+// HEX -> HSL
+function hexToHSL(hex) {
+  const rgb = hexToRGB(hex);
+  return RGBToHSL(rgb.r, rgb.g, rgb.b);
+}
+
+// HSL -> HEX
+function HSLToHex(h, s, l) {
+  const rgb = HSLToRGB(h, s, l);
+  return RGBToHex(rgb.r, rgb.g, rgb.b);
+}
