@@ -1,105 +1,94 @@
-<!DOCTYPE html> 
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Color Compatibility Checker</title>
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <!-- Пользовательские стили -->
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Compatibility Checker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container text-center mt-4">
-    <!-- Заголовок и описание -->
-    <header class="mb-4">
-      <h1 class="display-4">Color Compatibility Checker</h1>
-      <p class="lead mt-3">
-        Удобный инструмент для проверки совместимости цветов. Помогает создавать гармоничные цветовые схемы для ваших проектов.
-      </p>
-      <p class="text-muted">
-        Введите цвет в формате HEX в каждое поле, выберите цветовую схему из выпадающего списка, а затем нажмите "Проверить". Вы увидите, как цвета работают вместе!
-      </p>
-    </header>
+    <div class="container text-center">
+        <!-- Заголовок и описание -->
+        <header class="mb-4">
+            <h1 class="display-4">Color Compatibility Checker</h1>
+            <p class="lead mt-3">
+                Удобный инструмент для проверки совместимости цветов. Помогает создавать гармоничные цветовые схемы для ваших проектов.
+            </p>
+            <p class="text-muted">
+                Введите цвет в формате HEX в каждое поле, выберите цветовую схему из выпадающего списка, а затем нажмите "Check". Вы увидите, как цвета работают вместе!
+            </p>
+        </header>
 
-    <div id="colorBlocks" class="d-flex flex-wrap justify-content-center">
-      <!-- Блок 1 -->
-      <div class="color-block" id="block1">
-        <canvas></canvas>
-        <div class="mt-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="setMainColor(1)">Сделать главным</button>
+        <!-- Блоки цветов -->
+        <div class="d-flex flex-wrap justify-content-center">
+            <div class="color-block" id="block1">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(1)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(1)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(1)">Copy</button>
+                </div>
+            </div>
+            <div class="color-block" id="block2">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(2)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(2)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(2)">Copy</button>
+                </div>
+            </div>
+            <div class="color-block" id="block3">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(3)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(3)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(3)">Copy</button>
+                </div>
+            </div>
+            <div class="color-block" id="block4">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(4)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(4)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(4)">Copy</button>
+                </div>
+            </div>
+            <div class="color-block" id="block5">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(5)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(5)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(5)">Copy</button>
+                </div>
+            </div>
+            <div class="color-block" id="block6">
+                <canvas></canvas>
+                <button class="btn btn-primary btn-sm mt-2" onclick="setMainColor(6)">Set as Main</button>
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(6)">
+                    <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(6)">Copy</button>
+                </div>
+            </div>
         </div>
-        <div class="input-group mt-2">
-          <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(1)">
-          <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(1)">Copy</button>
+
+        <!-- Элементы управления -->
+        <div class="mt-4" id="controls">
+            <select class="form-select d-inline-block w-auto me-2" id="schemeSelector">
+                <option value="analogous">Analogous</option>
+                <option value="monochromatic">Monochromatic</option>
+                <option value="triad">Triad</option>
+                <option value="complementary">Complementary</option>
+                <option value="split-complementary">Split Complementary</option>
+                <option value="square">Square</option>
+                <option value="compound">Compound</option>
+                <option value="shades">Shades</option>
+            </select>
+            <button class="btn btn-secondary" id="checkButton" onclick="checkCompatibility()">Check</button>
+            <span id="checkNotification" class="ms-2"></span> <!-- Новый контейнер для уведомлений -->
         </div>
-      </div>
-      <!-- Блок 2 -->
-      <div class="color-block" id="block2">
-        <canvas></canvas>
-        <div class="mt-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="setMainColor(2)">Сделать главным</button>
-        </div>
-        <div class="input-group mt-2">
-          <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(2)">
-          <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(2)">Copy</button>
-        </div>
-      </div>
-      <!-- Блок 3 -->
-      <div class="color-block" id="block3">
-        <canvas></canvas>
-        <div class="mt-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="setMainColor(3)">Сделать главным</button>
-        </div>
-        <div class="input-group mt-2">
-          <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(3)">
-          <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(3)">Copy</button>
-        </div>
-      </div>
-      <!-- Блок 4 -->
-      <div class="color-block" id="block4">
-        <canvas></canvas>
-        <div class="mt-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="setMainColor(4)">Сделать главным</button>
-        </div>
-        <div class="input-group mt-2">
-          <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(4)">
-          <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(4)">Copy</button>
-        </div>
-      </div>
-      <!-- Блок 5 -->
-      <div class="color-block" id="block5">
-        <canvas></canvas>
-        <div class="mt-2">
-          <button class="btn btn-outline-primary btn-sm" onclick="setMainColor(5)">Сделать главным</button>
-        </div>
-        <div class="input-group mt-2">
-          <input type="text" class="form-control hex-input" placeholder="#FFFFFF" maxlength="7" oninput="updateColor(5)">
-          <button class="btn btn-outline-secondary btn-sm copy-btn" onclick="copyToClipboard(5)">Copy</button>
-        </div>
-      </div>
     </div>
 
-    <!-- Элементы управления -->
-    <div class="controls mt-4 d-flex justify-content-center align-items-center flex-wrap">
-      <select class="form-select w-auto me-2" id="schemeSelector">
-        <option value="analogous">Analogous</option>
-        <option value="monochromatic">Monochromatic</option>
-        <option value="triad">Triad</option>
-        <option value="complementary">Complementary</option>
-        <option value="split-complementary">Split Complementary</option>
-        <option value="square">Square</option>
-        <option value="compound">Compound</option>
-        <option value="shades">Shades</option>
-      </select>
-      <button class="btn btn-primary" id="checkButton" onclick="checkCompatibility()">Проверить</button>
-    </div>
-
-    <!-- Уведомление -->
-    <div id="notification" class="notification mt-3"></div>
-  </div>
-
-  <!-- Скрипт -->
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

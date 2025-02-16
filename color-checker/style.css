@@ -1,138 +1,102 @@
 /* Общие стили */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  /* Заголовок и описание */
-  header {
-    margin-bottom: 20px;
-  }
-  
-  header h1 {
-    font-size: 2.5rem;
-    color: #007bff;
-    margin: 0 0 10px;
-  }
-  
-  header p {
-    font-size: 1rem;
-    color: #6c757d;
-    margin: 0 0 20px;
-  }
-  
-  /* Блоки цветов */
-  #colorBlocks {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .color-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 10px;
-    transition: transform 0.3s;
-  }
-  
-  .color-block:hover {
-    transform: translateY(-5px);
-  }
-  
-  /* Для десктопной версии */
-  @media (min-width: 992px) {
-    #colorBlocks .color-block {
-      flex: 1 1 calc((80% / 5) - 20px); /* Рассчитывает ширину для 5 блоков */
-      max-width: calc((90% / 5) - 20px); /* Устанавливает максимум для ширины */
-    }
-  }
-  
-  /* Для планшетов */
-  @media (min-width: 768px) and (max-width: 991px) {
-    #colorBlocks .color-block {
-      flex: 1 1 calc((90% / 3) - 20px); /* Для 3 блоков в строке */
-    }
-  }
-  
-  /* Для мобильной версии */
-  @media (max-width: 767px) {
-    #colorBlocks .color-block {
-      flex: 1 1 90%; /* Полная ширина для одного блока */
-    }
-  }
-  
-  /* Стили для canvas */
-  .color-block canvas {
-    width: 100%;
-    height: 100px;
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 10px;
-  }
-  
-  /* Поля ввода и кнопки */
-  .hex-input {
-    text-align: center;
-    border-radius: 4px;
-  }
-  
-  .hex-input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-  
-  button.copy-btn {
-    margin-left: 5px;
-  }
-  
-  /* Уведомления */
-  .notification {
-    padding: 10px;
-    border-radius: 8px;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-  
-  .notification.show {
-    display: block;
-    opacity: 1;
-  }
-  
-  /* Выделение главного блока */
-  .main-color {
-    border: 3px solid #007bff;
-  }
-  
-  /* Адаптивность для мобильных устройств */
-  @media (max-width: 576px) {
-    #colorBlocks {
-      flex-direction: column;
-      align-items: center;
-    }
-    .color-block {
-      width: 80%;
-      margin: 10px 0;
-    }
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+.color-block {
+  width: 160px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: 10px;
+  padding: 10px;
+  transition: transform 0.3s;
+}
+
+.color-block:hover {
+  transform: translateY(-5px);
+}
+
+.color-block canvas {
+  width: 100%;
+  height: 100px;
+  border-radius: 4px;
+}
+
+.notification {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  display: none;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.main-color {
+  outline: 3px solid #007bff; /* Синяя обводка */
+  outline-offset: -3px; /* Смещение обводки внутрь блока */
+}
+
+/* Кнопка "Set as Main" (по умолчанию) */
+.btn-primary {
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+}
+
+/* Кнопка "Set as Main" при нажатии (активный элемент) */
+.color-block.main-color .btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: 2px solid #007bff;
+}
+
+/* Кнопка "Check" */
+#checkButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+/* Стиль для кнопки "Copy" */
+.copy-btn {
+  width: 50px; /* Фиксированная ширина */
+  text-align: center; /* Выравнивание текста по центру */
+  padding: 0; /* Убираем лишние отступы */
+  font-size: 0.9rem; /* Размер шрифта */
+  transition: none; /* Отключаем анимацию изменения размера */
+}
+
+/* Контейнер для элементов управления */
+#controls {
+  position: relative; /* Делаем родителем для абсолютного позиционирования */
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Уведомление справа от кнопки "Check" */
+#checkNotification {
+  font-size: 0.9rem;
+  color: #28a745; /* Зелёный цвет для успеха */
+  position: absolute; /* Абсолютное позиционирование */
+  left: 100%; /* Размещаем справа от кнопки */
+  top: 50%; /* Центрируем по вертикали */
+  transform: translateY(-50%); /* Корректируем центровку */
+  white-space: nowrap; /* Запрещаем перенос текста */
+  opacity: 0;
+  transition: opacity 0.3s;
+  margin-left: 10px; /* Отступ от кнопки */
+}
+
+#checkNotification.error {
+  color: #dc3545; /* Красный цвет для ошибок */
+}
