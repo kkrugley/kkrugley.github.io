@@ -1,0 +1,119 @@
+/* General Styles */
+body {
+    display: flex;
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+    height: 100vh;
+    margin: 0;
+    background-color: #f8f9fa; /* Светлый фон */
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    text-align: center; /* Центрирование текста внутри контейнера */
+    max-width: 1200px; /* Максимальная ширина контента */
+    width: 100%; /* Занимает всю доступную ширину */
+    padding: 20px; /* Отступы вокруг контента */
+    box-sizing: border-box; /* Учитываем padding в ширине */
+  }
+  
+  .color-blocks {
+    display: flex; /* Горизонтальное расположение блоков */
+    justify-content: center; /* Центрирование блоков по горизонтали */
+    gap: 20px; /* Органичные отступы между блоками */
+    margin-bottom: 30px; /* Отступ снизу для разделения контента */
+  }
+  
+  .color-block {
+    display: flex;
+    flex-direction: column; /* Вертикальное расположение элементов внутри блока */
+    align-items: center; /* Центрирование элементов внутри блока */
+    width: 120px; /* Фиксированная ширина блока */
+    padding: 15px; /* Внутренние отступы */
+    background-color: #ffffff; /* Белый фон блока */
+    border: 1px solid #ddd; /* Лёгкая граница */
+    border-radius: 8px; /* Скругление углов */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Лёгкая тень для объёмности */
+    transition: transform 0.3s ease; /* Плавная анимация при наведении */
+  }
+  
+  .color-block:hover {
+    transform: translateY(-5px); /* Поднятие блока при наведении */
+  }
+  
+  canvas {
+    width: 100%; /* Канвас занимает всю ширину блока */
+    height: 50px; /* Фиксированная высота */
+    border: 1px solid #ccc; /* Лёгкая граница */
+    border-radius: 4px; /* Скругление углов */
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+  }
+  
+  .make-main {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+    font-size: 12px;
+    margin: 10px 0; /* Отступы сверху и снизу */
+  }
+  
+  .input-group input {
+    width: 100%; /* Поле ввода занимает всю ширину блока */
+    padding: 8px; /* Внутренние отступы */
+    font-size: 14px; /* Размер текста */
+    border: 1px solid #ccc; /* Лёгкая граница */
+    border-radius: 4px; /* Скругление углов */
+    box-sizing: border-box; /* Учитываем padding в ширине */
+    transition: border-color 0.3s ease; /* Плавное изменение цвета границы */
+  }
+  
+  .input-group input:focus {
+    border-color: blue; /* Изменение цвета границы при фокусе */
+    outline: none; /* Убираем стандартный outline */
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center; /* Центрирование элементов управления */
+    align-items: center; /* Выравнивание по вертикали */
+    gap: 10px; /* Отступы между элементами */
+    margin-top: 20px; /* Отступ сверху */
+  }
+  
+  .notification {
+    margin-top: 20px; /* Отступ сверху */
+    padding: 10px; /* Внутренние отступы */
+    border-radius: 5px; /* Скругление углов */
+    font-size: 14px; /* Размер текста */
+    opacity: 0; /* Начальная прозрачность */
+    visibility: hidden; /* Невидимость */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Плавное появление */
+  }
+  
+  .notification.success {
+    background-color: green;
+    color: white;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .notification.error {
+    background-color: red;
+    color: white;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .color-blocks {
+      flex-direction: column; /* Вертикальное расположение блоков */
+      align-items: center; /* Центрирование блоков */
+      gap: 15px; /* Уменьшенные отступы */
+    }
+  
+    .color-block {
+      width: 100%; /* Блоки занимают всю ширину */
+      max-width: 300px; /* Максимальная ширина блока */
+    }
+  }
