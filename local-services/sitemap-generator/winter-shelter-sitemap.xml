@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://winter-shelter.vercel.app/</loc>
+    <lastmod>2025-03-02T23:32:36.652986</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/about</loc>
+    <lastmod>2025-03-02T22:16:22.543852</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/download</loc>
+    <lastmod>2025-03-02T23:34:19.877662</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/learn-more</loc>
+    <lastmod>2025-03-01T21:59:54.674707</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/redirect/family-shelter-download.html</loc>
+    <lastmod>2025-03-01T14:36:54.771806</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/redirect/manual-download.html</loc>
+    <lastmod>2025-03-01T14:37:03.995686</lastmod>
+  </url>
+  <url>
+    <loc>https://winter-shelter.vercel.app/redirect/single-shelter-download.html</loc>
+    <lastmod>2025-03-01T14:37:10.371789</lastmod>
+  </url>
+</urlset>
