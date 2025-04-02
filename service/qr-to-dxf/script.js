@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (qrPlaceholder) qrPlaceholder.style.display = 'none';
-                setStatus('QR Code Generated.', 'success');
+                setStatus('QR Code Generated!', 'success');
                 enableDownloadButtons();
 
             } catch (error) {
@@ -230,5 +230,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial State ---
     disableDownloadButtons();
     // Updated initial message
-    setStatus('Enter text or URL and click Generate.');
+    setStatus('Enter text or URL and click Generate');
 });
