@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator (Web)</title>
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="author" content="Pavel Kruhlei">
+    <link rel="icon" href="../../assets/img/fav.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>QR Code Generator to DXF</title>
+    <meta name="description" content="Generate QR codes and export to DXF format with precision vector lines. Designed for CAD/CAM systems - create manufacturing-ready codes without hatches or fills using high-density linear patterns.">
+    <meta name="keywords" content="QR code generator, DXF export, CAD vector lines, DXF QR code for laser cutting, laser cutting QR codes, CNC machining patterns, manufacturing QR codes, hatch-free design, technical drawing export, vector QR code, industrial marking system">
+    <meta property="og:title" content="Vector QR Code Generator for CAD/CAM Systems | DXF Export">
+    <meta property="og:description" content="Create hatch-free QR codes with high-density vector lines for precise manufacturing applications. Export directly to DXF format for CAD software integration.">
+    <meta property="og:image" content="https://kkrugley.github.io/images/qr-label.jpg">
+    <meta property="og:url" content="https://kkrugley.github.io/">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://kkrugley.github.io/">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
           rel="stylesheet"
@@ -14,15 +27,14 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="text-center mb-4">QR Code Generator</h1>
+        <h1 class="text-center mb-4">QR Code Generator to DXF</h1>
+        <h2 class="text-center mb-4">DXF QR code for laser cutting for Free | Vector-Based CAD Export | No Fill Patterns</h2>
 
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
                 <!-- Input Section -->
                 <div class="input-group mb-3">
-                    <input type="url" class="form-control" id="urlInput"
-                           placeholder="Enter URL (e.g., https://www.example.com)"
-                           aria-label="URL Input" required>
+                    <input type="text" class="form-control" id="textInput" placeholder="Enter text, URL, number, etc. to encode" aria-label="Data Input" required>
                     <button class="btn btn-primary" type="button" id="generateBtn">Generate</button>
                 </div>
 
@@ -48,7 +60,19 @@
             </div>
         </div>
     </div>
+    <!-- Footer -->
+    <footer class="container mt-5 text-center">
 
+        <!-- Key Differentiators -->
+        <div class="text-muted fst-italic small opacity-25 mb-4">
+            "DXF QR code for laser cutting", "Vector QR code generator", "Hatch-free CAD patterns", "High-density line QR codes"<br>"Manufacturing-ready DXF export", "Technical drawing QR codes", "CNC-compatible QR patterns"
+        </div>
+
+        <!-- Copyright -->
+        <p class="text-muted small fst-italic">
+            2024 - <span id="current-year"></span> &copy; <a href="https://bento.me/kkrugley" target="_blank">Pavel Kruhlei</a>
+        </p>
+    </footer>
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -57,5 +81,9 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <!-- Custom JS -->
     <script src="script.js"></script>
+    <script>
+        const currentYear = new Date().getFullYear();
+        document.getElementById('current-year').textContent = currentYear;
+      </script>
 </body>
 </html>
