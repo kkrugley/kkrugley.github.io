@@ -1,12 +1,3 @@
-/* Add any custom overrides or additional styles here */
-/* Example: Ensure QR canvas is centered if flex alignment isn't enough */
-#qrCodeContainer canvas,
-#qrCodeContainer img { /* qrcode.js might generate img or canvas */
-    display: block;
-    margin: auto;
+#qrCodeContainer canvas, #qrCodeContainer img {
+    filter: invert(1);
 }
-
-/* Slightly increase contrast for placeholder text if needed */
-/* #qrPlaceholder {
-    color: var(--bs-secondary-color) !important;
-} */

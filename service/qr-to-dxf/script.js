@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Updated ID reference to match HTML change
+    // Updated ID reference
     const textInput = document.getElementById('textInput');
     const generateBtn = document.getElementById('generateBtn');
     const qrCodeContainer = document.getElementById('qrCodeContainer');
@@ -13,46 +13,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const DXF_LINES_PER_MODULE = 50; // Number of lines for hatching
 
     let currentQRCode = null; // To hold the qrcode.js instance
-    let currentData = '';     // To hold the generated data for filenames
+    let currentInputText = ''; // To hold the generated text for filenames
 
     // --- Generate QR Code ---
     const generateQRCode = () => {
-        const inputText = textInput.value.trim(); // Get data from input
-
-        // Only check if the input is empty
+        const inputText = textInput.value.trim(); // Get text from input
         if (!inputText) {
-            setStatus('Please enter some data to encode.', 'warning');
+            // Updated status message
+            setStatus('Please enter text or URL to encode.', 'warning');
             textInput.focus();
             return;
         }
 
+        // Removed URL validation block - any non-empty text is now valid
+
         setStatus('Generating...', 'info');
         clearQRCode(); // Clear previous QR code
         disableDownloadButtons();
-        currentData = inputText; // Store the input data for filename suggestion
+        currentInputText = inputText; // Store for filename suggestion
 
         // Use setTimeout to allow the UI to update before heavy lifting
         setTimeout(() => {
             try {
                 currentQRCode = new QRCode(qrCodeContainer, {
-                    text: inputText, // Use the input text directly
+                    text: inputText,
                     width: QR_CODE_SIZE,
                     height: QR_CODE_SIZE,
-                    colorDark: "#ffffff", // White dots on dark theme
+                    colorDark: "#000000",        // BLACK dots (will be inverted to white)
                     colorLight: "rgba(0,0,0,0)", // Transparent background
-                    correctLevel: QRCode.CorrectLevel.L // Low error correction
+                    correctLevel: QRCode.CorrectLevel.L
                 });
 
-                // Hide placeholder, show canvas/img
                 if (qrPlaceholder) qrPlaceholder.style.display = 'none';
-
                 setStatus('QR Code Generated.', 'success');
                 enableDownloadButtons();
 
             } catch (error) {
                 console.error("QR Code Generation Error:", error);
                 setStatus(`Error generating QR Code: ${error.message}`, 'danger');
-                clearQRCode(); // Clear potential partial generation
+                clearQRCode();
             }
         }, 10); // Small delay
     };
@@ -81,9 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!qrCodeContainer.querySelector('#qrPlaceholder')) {
             qrCodeContainer.appendChild(qrPlaceholder);
         }
-         if (qrPlaceholder) qrPlaceholder.style.display = 'block';
+        if (qrPlaceholder) qrPlaceholder.style.display = 'block';
         currentQRCode = null;
-        currentData = '';
+        currentInputText = ''; // Clear stored text
     }
 
     // Removed isValidHttpUrl function as it's no longer needed
@@ -98,77 +97,94 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadDxfBtn.disabled = false;
     }
 
-    // Updated filename suggestion for generic text
+    // suggestFilename works reasonably well for general text too
     function suggestFilename(inputText) {
-        if (!inputText) return "qrcode_data";
+        if (!inputText) return "qrcode";
         try {
-            // Replace whitespace with underscore, remove unsafe chars
-            let name = inputText.trim().replace(/\s+/g, '_');
-            name = name.replace(/[^a-zA-Z0-9_.-]/g, ''); // Allow letters, numbers, _, ., -
-            // Limit length
-            name = name.substring(0, 50);
-            // Ensure it's not empty after cleaning
-            return name || "qrcode_data";
+            // Attempt to treat as URL first for cleaner names if it is one
+            let name = inputText;
+            try {
+                 const url = new URL(inputText);
+                 if (url.protocol === "http:" || url.protocol === "https:") {
+                    name = url.hostname + url.pathname;
+                 }
+            } catch (_) {
+                // Not a valid URL, treat as plain text
+            }
+
+            name = name.replace(/^https?:\/\//, '').replace(/\/$/, ''); // Clean URL parts if present
+            name = name.replace(/[^a-zA-Z0-9-_.]/g, '_'); // Replace invalid chars
+            // Prevent excessively long filenames from text
+            return name.substring(0, 50) || "qrcode";
         } catch {
-            return "qrcode_data"; // Fallback
+            return "qrcode";
         }
     }
 
 
-    // --- Download Logic ---
+    // --- Download Logic (PNG processing remains the same) ---
     function downloadPNG() {
         if (!currentQRCode) {
             setStatus('Generate QR code first.', 'warning');
             return;
         }
-
-        const canvas = qrCodeContainer.querySelector('canvas');
-        const img = qrCodeContainer.querySelector('img');
-        let dataUrl = null;
-
-        if (canvas) {
-            dataUrl = canvas.toDataURL('image/png');
-        } else if (img) {
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = img.naturalWidth;
-            tempCanvas.height = img.naturalHeight;
-            const ctx = tempCanvas.getContext('2d');
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-            ctx.drawImage(img, 0, 0);
-            dataUrl = tempCanvas.toDataURL('image/png');
+    
+        const originalCanvas = qrCodeContainer.querySelector('canvas');
+        const originalImg = qrCodeContainer.querySelector('img');
+    
+        if (!originalCanvas && !originalImg) {
+            setStatus('Could not find QR code element.', 'danger');
+            return;
         }
-
-        if (dataUrl) {
-            // Use currentData (the actual input) for filename suggestion
-            const filename = `${suggestFilename(currentData)}.png`;
-            triggerDownload(dataUrl, filename);
-            setStatus(`PNG ready for download: ${filename}`, 'info');
-        } else {
-             setStatus('Could not get PNG data.', 'danger');
-        }
+    
+        setStatus('Processing PNG for download...', 'info');
+    
+        setTimeout(() => {
+            try {
+                let dataUrl;
+                if (originalCanvas) {
+                    dataUrl = originalCanvas.toDataURL('image/png');
+                } else {
+                    // For img element, create canvas with white background
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = originalImg.naturalWidth;
+                    tempCanvas.height = originalImg.naturalHeight;
+                    tempCtx.fillStyle = '#ffffff';
+                    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                    tempCtx.drawImage(originalImg, 0, 0);
+                    dataUrl = tempCanvas.toDataURL('image/png');
+                }
+    
+                const filename = `${suggestFilename(currentInputText)}.png`;
+                triggerDownload(dataUrl, filename);
+                setStatus(`PNG ready for download: ${filename}`, 'info');
+    
+            } catch (error) {
+                console.error("PNG Processing Error:", error);
+                setStatus(`Error processing PNG: ${error.message}`, 'danger');
+            }
+        }, 10);
     }
 
+    // --- Download Logic (DXF remains the same) ---
     function downloadDXF() {
         if (!currentQRCode || !currentQRCode._oQRCode) {
              setStatus('Generate QR code first or data unavailable.', 'warning');
             return;
         }
-
+        // ... (DXF generation code is identical to the previous version) ...
         setStatus('Generating DXF...', 'info');
-
         setTimeout(() => {
             try {
                 const qrData = currentQRCode._oQRCode;
                 const moduleCount = qrData.moduleCount;
                 const modules = qrData.modules;
-
                 let dxfContent = `0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n`;
                 dxfContent += `0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n1\n`;
-                dxfContent += `0\nLAYER\n2\nQR_LINES\n70\n0\n62\n7\n6\nCONTINUOUS\n`;
+                dxfContent += `0\nLAYER\n2\nQR_LINES\n70\n0\n62\n0\n6\nCONTINUOUS\n`;
                 dxfContent += `0\nENDTAB\n0\nENDSEC\n`;
                 dxfContent += `0\nSECTION\n2\nENTITIES\n`;
-
                 const lineStep = DXF_MODULE_SIZE / (DXF_LINES_PER_MODULE + 1);
 
                 for (let row = 0; row < moduleCount; row++) {
@@ -177,26 +193,23 @@ document.addEventListener('DOMContentLoaded', () => {
                             const x0 = col * DXF_MODULE_SIZE;
                             const y0 = (moduleCount - 1 - row) * DXF_MODULE_SIZE;
                             const x1 = x0 + DXF_MODULE_SIZE;
-
                             for (let i = 1; i <= DXF_LINES_PER_MODULE; i++) {
                                 const lineY = y0 + i * lineStep;
-                                dxfContent += `0\nLINE\n8\nQR_LINES\n10\n${x0}\n20\n${lineY}\n30\n0.0\n11\n${x1}\n21\n${lineY}\n31\n0.0\n`;
+                                dxfContent += `0\nLINE\n8\nQR_LINES\n`;
+                                dxfContent += `10\n${x0}\n20\n${lineY}\n30\n0.0\n`;
+                                dxfContent += `11\n${x1}\n21\n${lineY}\n31\n0.0\n`;
                             }
                         }
                     }
                 }
-
                 dxfContent += `0\nENDSEC\n0\nEOF\n`;
-
                 const blob = new Blob([dxfContent], { type: 'application/dxf' });
                 const url = URL.createObjectURL(blob);
-                // Use currentData (the actual input) for filename suggestion
-                const filename = `${suggestFilename(currentData)}.dxf`;
-
+                 // Use currentInputText for filename suggestion
+                const filename = `${suggestFilename(currentInputText)}.dxf`;
                 triggerDownload(url, filename);
                 URL.revokeObjectURL(url);
                 setStatus(`DXF ready for download: ${filename}`, 'info');
-
             } catch (error) {
                  console.error("DXF Generation Error:", error);
                  setStatus(`Error generating DXF: ${error.message}`, 'danger');
@@ -216,5 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial State ---
     disableDownloadButtons();
-    setStatus('Enter data above and click Generate.'); // Updated initial message
+    // Updated initial message
+    setStatus('Enter text or URL and click Generate.');
 });
