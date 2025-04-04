@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search for vinyl album releases by date and genre using AI. Find classic records and discover music history.">
+    <meta name="keywords" content="vinyl, records, album, release date, music search, genre, Gemini AI, Bootstrap, music history">
+    <title>Vinyl Release Search</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- SEO: Link Relation for Canonical URL (if applicable) -->
+    <!-- <link rel="canonical" href="https://yourdomain.com/vinyl-search/" /> -->
+
+    <!-- SEO: Open Graph Meta Tags (for social sharing) -->
+    <meta property="og:title" content="Vinyl Release Search by Date & Genre">
+    <meta property="og:description" content="Find vinyl albums released on a specific date in your favorite genre.">
+    <meta property="og:type" content="website">
+    <!-- <meta property="og:url" content="https://yourdomain.com/vinyl-search/"> -->
+    <!-- <meta property="og:image" content="https://yourdomain.com/path/to/preview-image.jpg"> -->
+
+    <!-- SEO: Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vinyl Release Search by Date & Genre">
+    <meta name="twitter:description" content="Find vinyl albums released on a specific date in your favorite genre.">
+    <!-- <meta name="twitter:image" content="https://yourdomain.com/path/to/preview-image.jpg"> -->
+
+</head>
+<body class="bg-light">
+
+    <div class="container main-container d-flex flex-column align-items-center justify-content-center">
+        <h1 class="mb-4 text-center">Find Vinyl Releases</h1>
+
+        <div class="content-wrapper">
+            <!-- Search Form Area -->
+            <div id="search-form" class="search-area p-4 rounded shadow-sm bg-white">
+                <p class="text-center mb-3">Select a date and genre to find releases:</p>
+                <div class="mb-3">
+                    <label for="release-date" class="form-label">Release Date:</label>
+                    <input type="date" id="release-date" class="form-control" required>
+                </div>
+                <div class="d-flex align-items-end">
+                    <div class="flex-grow-1 me-2">
+                        <label for="genre-select" class="form-label">Genre:</label>
+                        <select id="genre-select" class="form-select" required>
+                            <option value="" disabled selected>Select Genre</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Blues">Blues</option>
+                            <option value="Funk">Funk</option>
+                            <option value="Soul">Soul</option>
+                            <option value="Hip Hop">Hip Hop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Classical">Classical</option>
+                            <option value="Country">Country</option>
+                            <option value="Reggae">Reggae</option>
+                            <option value="Metal">Metal</option>
+                            <option value="Punk">Punk</option>
+                            <option value="Folk">Folk</option>
+                            <!-- Add more genres as needed -->
+                        </select>
+                    </div>
+                    <button id="search-button" type="button" class="btn btn-primary">Search</button>
+                </div>
+                 <div id="search-error" class="text-danger mt-2 d-none">Please select both date and genre.</div>
+            </div>
+
+            <!-- Results Area (Initially Hidden) -->
+            <div id="results-area" class="results-area d-none p-4 rounded shadow-sm bg-white">
+                 <button id="back-button" type="button" class="btn btn-sm btn-outline-secondary mb-3">< Back to Search</button>
+                <div id="loading" class="text-center d-none my-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Searching for vinyls...</p>
+                </div>
+
+                <div id="results-content" class="d-none">
+                     <h2 class="h5 text-center mb-3" id="results-heading">Found Releases</h2>
+                    <div id="vinylCarousel" class="carousel slide mb-3" data-bs-ride="carousel" data-bs-interval="false">
+                         <div class="carousel-indicators" id="carousel-indicators">
+                            <!-- Indicators will be added here by JS -->
+                         </div>
+                        <div class="carousel-inner" id="carousel-inner">
+                            <!-- Carousel items will be added here by JS -->
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#vinylCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#vinylCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                     <div id="no-results" class="text-center my-5 d-none">
+                        <p>No vinyl albums found for this date and genre.</p>
+                    </div>
+                    <div class="text-center">
+                         <button id="buy-button" class="btn btn-success d-none" target="_blank" rel="noopener noreferrer">
+                            Buy This Album
+                         </button>
+                    </div>
+                </div>
+                 <div id="api-error" class="alert alert-danger mt-3 d-none" role="alert">
+                    An error occurred while searching. Please try again later.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>

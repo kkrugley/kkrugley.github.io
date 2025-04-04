@@ -1,0 +1,115 @@
+/* Basic full height setup and prevent page scroll */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex; /* Use flexbox on body */
+    flex-direction: column; /* Stack children vertically */
+}
+
+/* Main wrapper for 60% width and vertical flex growth */
+.main-content-wrapper {
+    max-width: 60%; /* *** CHANGE: Set width to 60% *** */
+    margin-left: auto;
+    margin-right: auto;
+    flex-grow: 1; /* Allow wrapper to fill vertical space */
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem; /* Add some bottom padding inside wrapper */
+}
+
+/* Responsive width adjustments */
+@media (max-width: 1200px) { /* Below XL */
+     .main-content-wrapper {
+         max-width: 75%;
+     }
+}
+@media (max-width: 992px) { /* Below large */
+    .main-content-wrapper {
+        max-width: 90%;
+    }
+}
+@media (max-width: 768px) { /* Below medium */
+    .main-content-wrapper {
+        max-width: 95%;
+    }
+    h1.display-5 { font-size: 2rem; }
+}
+@media (max-width: 576px) { /* Below small */
+     .main-content-wrapper {
+         max-width: 100%;
+         padding-left: 10px;
+         padding-right: 10px;
+     }
+     h1.display-5 { font-size: 1.75rem; }
+     .card-header { font-size: 0.9rem; }
+}
+
+/* Make main app row grow and handle potential overflow if needed */
+.main-app-row {
+    flex-grow: 1;
+    min-height: 0; /* Override potential Bootstrap min-heights and allow shrinking */
+    overflow: hidden; /* Prevent row itself from causing scroll */
+}
+
+/* Ensure columns within the growing row can stretch */
+.main-app-row > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure the inner flex container in columns takes height */
+.main-app-row > [class*="col-"] > .d-flex {
+    flex-grow: 1;
+    min-height: 0; /* Allow shrinking */
+}
+
+/* --- Specific Card Styling --- */
+
+/* Details Card: Limit height and add scroll */
+.details-card {
+    min-height: 150px; /* Minimum sensible height */
+    max-height: 250px; /* *** Maximum height for the card *** */
+    /* flex-shrink: 1 is default, which is fine */
+    display: flex; /* Make card a flex container */
+    flex-direction: column; /* Stack header and body */
+}
+
+.details-card-body {
+    overflow-y: auto; /* *** Add vertical scroll ONLY to the body *** */
+    flex-grow: 1; /* Allow body to fill card space */
+    min-height: 0; /* Allow shrinking */
+}
+
+/* Ensure pre tag doesn't have its own scroll */
+#detailsOutput {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.8rem;
+    margin: 0;
+    /* No overflow or height settings needed here */
+}
+
+/* Visualization Cards: Ensure they fill space */
+.card.flex-grow-1 {
+    display: flex; /* Ensure card is flex container */
+    flex-direction: column; /* Stack header/body */
+    min-height: 0; /* Allow shrinking */
+}
+
+.card.flex-grow-1 > .card-body {
+    flex-grow: 1; /* Make body fill */
+    display: flex; /* Make body flex for canvas */
+    min-height: 150px; /* Min height for viz */
+}
+
+.vis-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure canvas content scales nicely if needed */
+}
