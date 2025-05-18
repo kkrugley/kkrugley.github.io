@@ -50,7 +50,7 @@
     <script src="assets/background_generator/background_script.js"></script><!--background generator-->
     <script src="assets/js/browser.js"></script>
     <script>
-      fetch('service/curl_answer.php')
+      fetch('curl_answer.php')
           .then(response => response.text())
           .then(ip => document.getElementById('ip').textContent = ip);
   </script>
