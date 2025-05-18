@@ -31,7 +31,7 @@
         <p>Pavel Kruhlei<br>Designer & Digital Creator<br><br><br>Poznań, Poland<br><a href="mailto:kkrugley@proton.me">kkrugley@proton.me</a><br><br><br><br></p>
 		</div>
 <div class="intro"> 
-        <center>
+  <center>
 <a href="https://www.linkedin.com/in/krugley/" target="_blank" rel="noopener noreferrer">LinkedIn</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.behance.net/kkrugley" target="_blank" rel="noopener noreferrer">Behance</a>
   </center>
 		</div>
@@ -49,5 +49,10 @@
     
     <script src="assets/background_generator/background_script.js"></script><!--background generator-->
     <script src="assets/js/browser.js"></script>
+    <script>
+      fetch('/service/curl_answer.php')
+          .then(response => response.text())
+          .then(ip => document.getElementById('ip').textContent = ip);
+  </script>
   </body>
 </html>
