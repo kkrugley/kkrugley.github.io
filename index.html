@@ -51,8 +51,20 @@
     <script src="assets/js/browser.js"></script>
     <script>
       fetch('curl_answer.php')
-          .then(response => response.text())
-          .then(ip => document.getElementById('ip').textContent = ip);
+          .then(response => response.json())
+          .then(data => {
+              const container = document.getElementById('data');
+              container.innerHTML = `
+                  <div class="info">IP-адрес: ${data.ip}</div>
+                  <div class="info">Браузер: ${data.user_agent}</div>
+                  <div class="info">Язык: ${data.language}</div>
+                  <div class="info">Протокол: ${data.protocol}</div>
+                  <div class="info">Метод запроса: ${data.method}</div>
+                  <div class="info">Случайный факт: ${data.random_fact}</div>
+                  <div class="info">Время запроса: ${data.timestamp}</div>
+              `;
+          })
+          .catch(error => console.error('Ошибка:', error));
   </script>
   </body>
 </html>
