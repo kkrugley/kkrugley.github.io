@@ -50,21 +50,34 @@
     <script src="assets/background_generator/background_script.js"></script><!--background generator-->
     <script src="assets/js/browser.js"></script>
     <script>
-      fetch('curl_answer.php')
-          .then(response => response.json())
-          .then(data => {
-              const container = document.getElementById('data');
-              container.innerHTML = `
-                  <div class="info">IP-адрес: ${data.ip}</div>
-                  <div class="info">Браузер: ${data.user_agent}</div>
-                  <div class="info">Язык: ${data.language}</div>
-                  <div class="info">Протокол: ${data.protocol}</div>
-                  <div class="info">Метод запроса: ${data.method}</div>
-                  <div class="info">Случайный факт: ${data.random_fact}</div>
-                  <div class="info">Время запроса: ${data.timestamp}</div>
-              `;
-          })
-          .catch(error => console.error('Ошибка:', error));
-  </script>
+
+      async function getClientInfo() {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        
+        const facts = [
+          `Ваш IP: ${data.ip}`,
+          `Браузер: ${navigator.userAgent}`,
+          `Платформа: ${navigator.platform}`,
+          `Языки: ${navigator.languages}`,
+          `Время: ${new Date().toLocaleString()}`,
+          `Cookie: ${navigator.cookieEnabled ? 'включены' : 'выключены'}`
+        ];
+      
+        return {
+          ip: data.ip,
+          user_agent: navigator.userAgent,
+          language: navigator.language,
+          random_fact: facts[Math.floor(Math.random() * facts.length)],
+          timestamp: new Date().toISOString()
+        };
+      }
+      
+      // Используйте вместо вашего текущего fetch
+      getClientInfo().then(data => {
+        console.log('Информация:', data);
+        // Вставьте данные в DOM
+      });
+      </script>
   </body>
 </html>
