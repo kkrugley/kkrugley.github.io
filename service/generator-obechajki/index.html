@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор развертки конусной обечайки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .canvas-container {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            overflow: auto;
+            max-height: 600px;
+        }
+        canvas {
+            display: block;
+            background: white;
+        }
+        .info {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .canvas-container, .canvas-container * {
+                visibility: visible;
+            }
+            .canvas-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                margin: 0;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Генератор развертки конусной обечайки</h1>
+        
+        <div class="controls">
+            <div class="input-group">
+                <label for="r1">Больший радиус R1 (мм):</label>
+                <input type="number" id="r1" value="100" step="0.1" min="0.1">
+            </div>
+            <div class="input-group">
+                <label for="r2">Меньший радиус R2 (мм):</label>
+                <input type="number" id="r2" value="50" step="0.1" min="0.1">
+            </div>
+            <div class="input-group">
+                <label for="height">Высота H (мм):</label>
+                <input type="number" id="height" value="100" step="0.1" min="0.1">
+            </div>
+            <div class="input-group">
+                <label>&nbsp;</label>
+                <div>
+                    <button onclick="generatePattern()">Сгенерировать развертку</button>
+                    <button onclick="downloadImage()">Скачать изображение</button>
+                    <button onclick="printPattern()">Печать</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="info" class="info" style="display: none;"></div>
+
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Масштаб: 1 пиксель = 1 мм (приблизительно для экрана 96 DPI)
+        const scale = 3.779527559; // пикселей на мм при 96 DPI
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('info').style.display = 'none';
+        }
+        
+        function showInfo(message) {
+            const infoDiv = document.getElementById('info');
+            infoDiv.innerHTML = message;
+            infoDiv.style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function generatePattern() {
+            const r1 = parseFloat(document.getElementById('r1').value);
+            const r2 = parseFloat(document.getElementById('r2').value);
+            const h = parseFloat(document.getElementById('height').value);
+            
+            if (r1 <= 0 || r2 <= 0 || h <= 0) {
+                showError('Все параметры должны быть больше нуля');
+                return;
+            }
+            
+            if (r1 <= r2) {
+                showError('Больший радиус R1 должен быть больше меньшего радиуса R2');
+                return;
+            }
+            
+            // Расчет параметров развертки
+            const L = Math.sqrt(h * h + (r1 - r2) * (r1 - r2)); // образующая
+            const R_big = r1 * L / (r1 - r2); // радиус большей дуги
+            const R_small = r2 * L / (r1 - r2); // радиус меньшей дуги
+            const angle = 2 * Math.PI * r1 / R_big; // угол сектора в радианах
+            
+            // Размеры canvas в пикселях (масштаб 1:1)
+            const canvasWidth = Math.ceil((R_big * 2 + 50) * scale);
+            const canvasHeight = Math.ceil((R_big + 50) * scale);
+            
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            // Центр развертки
+            const centerX = R_big * scale + 25 * scale;
+            const centerY = 25 * scale;
+            
+            // Очистка canvas
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // Настройка стилей
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            ctx.fillStyle = 'none';
+            
+            // Рисование внешней дуги
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, R_big * scale, 0, angle);
+            ctx.stroke();
+            
+            // Рисование внутренней дуги
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, R_small * scale, 0, angle);
+            ctx.stroke();
+            
+            // Рисование боковых линий
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + R_big * scale, centerY);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + R_big * scale * Math.cos(angle), centerY + R_big * scale * Math.sin(angle));
+            ctx.stroke();
+            
+            // Добавление размерных линий и текста
+            ctx.font = '12px Arial';
+            ctx.fillStyle = '#666666';
+            
+            // Размеры
+            const info = `
+                <strong>Параметры развертки:</strong><br>
+                Образующая L = ${L.toFixed(2)} мм<br>
+                Радиус большей дуги = ${R_big.toFixed(2)} мм<br>
+                Радиус меньшей дуги = ${R_small.toFixed(2)} мм<br>
+                Угол сектора = ${(angle * 180 / Math.PI).toFixed(2)}°<br>
+                Длина большей дуги = ${(2 * Math.PI * r1).toFixed(2)} мм<br>
+                Длина меньшей дуги = ${(2 * Math.PI * r2).toFixed(2)} мм
+            `;
+            
+            showInfo(info);
+            
+            // Добавление засечек для точности
+            drawMeasurementMarks(centerX, centerY, R_big * scale, R_small * scale, angle);
+        }
+        
+        function drawMeasurementMarks(centerX, centerY, radiusBig, radiusSmall, angle) {
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = 0.5;
+            
+            // Засечки через каждые 10 градусов
+            const markInterval = Math.PI / 18; // 10 градусов в радианах
+            for (let a = 0; a <= angle; a += markInterval) {
+                const x1 = centerX + radiusBig * Math.cos(a);
+                const y1 = centerY + radiusBig * Math.sin(a);
+                const x2 = centerX + radiusSmall * Math.cos(a);
+                const y2 = centerY + radiusSmall * Math.sin(a);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1 - 10 * Math.cos(a), y1 - 10 * Math.sin(a));
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 + 10 * Math.cos(a), y2 + 10 * Math.sin(a));
+                ctx.stroke();
+            }
+        }
+        
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'cone_pattern.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        function printPattern() {
+            window.print();
+        }
+        
+        // Генерация при загрузке страницы
+        window.onload = function() {
+            generatePattern();
+        };
+    </script>
+</body>
+</html>
