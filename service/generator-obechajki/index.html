@@ -50,6 +50,10 @@
         button:hover {
             background: #0056b3;
         }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
         .canvas-container {
             border: 1px solid #ddd;
             margin: 20px 0;
@@ -89,6 +93,7 @@
         .page {
             border: 2px solid #007bff;
             position: relative;
+            margin-bottom: 40px;
         }
         .page-label {
             position: absolute;
@@ -99,6 +104,39 @@
             padding: 2px 8px;
             font-size: 12px;
             border-radius: 4px 4px 0 0;
+        }
+        .page-controls {
+            position: absolute;
+            bottom: -35px;
+            left: 0;
+            display: flex;
+            gap: 5px;
+        }
+        .page-controls button {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin: 0;
+        }
+        .download-all-container {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #28a745;
+            width: 0%;
+            transition: width 0.3s ease;
         }
         @media print {
             body * {
@@ -139,7 +177,6 @@
                 <div>
                     <button onclick="generatePattern()">Сгенерировать развертку</button>
                     <button onclick="downloadImage()">Скачать полное изображение</button>
-                    <button onclick="downloadPages()">Скачать листы А4</button>
                 </div>
             </div>
         </div>
@@ -152,8 +189,16 @@
             <canvas id="canvas"></canvas>
         </div>
 
+        <div id="download-all-container" class="download-all-container" style="display: none;">
+            <h3>Скачивание всех листов А4</h3>
+            <button id="download-all-btn" onclick="downloadAllPages()">Скачать все листы (с задержкой)</button>
+            <div id="download-progress" class="progress" style="display: none;">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div id="download-status"></div>
+        </div>
+
         <div id="pages-container" class="pages-container" style="display: none;"></div>
-        <div id="print-area" class="print-area" style="display: none;"></div>
     </div>
 
     <script>
@@ -169,6 +214,7 @@
         const MARGIN = 10; // отступы в мм
         
         let currentPattern = null;
+        let pageCanvases = [];
         
         function showError(message) {
             document.getElementById('error').textContent = message;
@@ -263,8 +309,10 @@
                 
                 info += `<br><strong>Для печати потребуется ${totalPages} листов А4</strong>`;
                 generateA4Pages();
+                document.getElementById('download-all-container').style.display = 'block';
             } else {
                 document.getElementById('pages-container').style.display = 'none';
+                document.getElementById('download-all-container').style.display = 'none';
             }
             
             showInfo(info);
@@ -339,6 +387,7 @@
             const container = document.getElementById('pages-container');
             container.innerHTML = '';
             container.style.display = 'flex';
+            pageCanvases = [];
             
             const developmentWidth = currentPattern.R * Math.sin(currentPattern.angle);
             const developmentHeight = currentPattern.R - currentPattern.R_small;
@@ -351,12 +400,16 @@
                     const pageCanvas = document.createElement('canvas');
                     pageCanvas.width = A4_WIDTH * scale;
                     pageCanvas.height = A4_HEIGHT * scale;
-                    pageCanvas.style.border = '1px solid #ccc';
                     
                     const pageCtx = pageCanvas.getContext('2d');
                     
+                    // Белый фон
+                    pageCtx.fillStyle = 'white';
+                    pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+                    
                     // Рамка листа
                     pageCtx.strokeStyle = '#ccc';
+                    pageCtx.lineWidth = 1;
                     pageCtx.strokeRect(MARGIN * scale, MARGIN * scale, 
                                      (A4_WIDTH - 2*MARGIN) * scale, 
                                      (A4_HEIGHT - 2*MARGIN) * scale);
@@ -379,6 +432,10 @@
                     pageCtx.fillStyle = '#000';
                     pageCtx.font = '12px Arial';
                     pageCtx.fillText(`Лист ${y * pagesX + x + 1}`, 5, 15);
+                    pageCtx.fillText(`Строка ${y + 1}, Столбец ${x + 1}`, 5, 30);
+                    
+                    // Добавление в массив
+                    pageCanvases.push(pageCanvas);
                     
                     // Обертка для страницы
                     const pageDiv = document.createElement('div');
@@ -388,28 +445,100 @@
                     label.className = 'page-label';
                     label.textContent = `Лист ${y * pagesX + x + 1}`;
                     
+                    const controls = document.createElement('div');
+                    controls.className = 'page-controls';
+                    
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.textContent = 'Скачать';
+                    downloadBtn.onclick = () => downloadSinglePage(y * pagesX + x, pageCanvas);
+                    
+                    const printBtn = document.createElement('button');
+                    printBtn.textContent = 'Печать';
+                    printBtn.onclick = () => printSinglePage(pageCanvas);
+                    
+                    controls.appendChild(downloadBtn);
+                    controls.appendChild(printBtn);
+                    
                     pageDiv.appendChild(label);
                     pageDiv.appendChild(pageCanvas);
+                    pageDiv.appendChild(controls);
                     container.appendChild(pageDiv);
                 }
             }
         }
         
+        function downloadSinglePage(index, pageCanvas) {
+            const link = document.createElement('a');
+            link.download = `cone_pattern_page_${index + 1}.png`;
+            link.href = pageCanvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function printSinglePage(pageCanvas) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head><title>Печать листа</title></head>
+                <body style="margin:0; padding:0;">
+                    <img src="${pageCanvas.toDataURL()}" style="width:100%; height:100%;">
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        async function downloadAllPages() {
+            if (pageCanvases.length === 0) return;
+            
+            const btn = document.getElementById('download-all-btn');
+            const progress = document.getElementById('download-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const status = document.getElementById('download-status');
+            
+            btn.disabled = true;
+            progress.style.display = 'block';
+            status.textContent = 'Начинаем скачивание...';
+            
+            for (let i = 0; i < pageCanvases.length; i++) {
+                try {
+                    const link = document.createElement('a');
+                    link.download = `cone_pattern_page_${i + 1}.png`;
+                    link.href = pageCanvases[i].toDataURL('image/png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    const progress_percent = ((i + 1) / pageCanvases.length) * 100;
+                    progressBar.style.width = progress_percent + '%';
+                    status.textContent = `Скачано ${i + 1} из ${pageCanvases.length} листов`;
+                    
+                    // Задержка между скачиваниями (важно для браузеров)
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                } catch (error) {
+                    status.textContent = `Ошибка при скачивании листа ${i + 1}: ${error.message}`;
+                    break;
+                }
+            }
+            
+            btn.disabled = false;
+            status.textContent = 'Скачивание завершено!';
+            setTimeout(() => {
+                progress.style.display = 'none';
+                status.textContent = '';
+            }, 3000);
+        }
+        
         function downloadImage() {
             const link = document.createElement('a');
             link.download = 'cone_pattern_full.png';
-            link.href = canvas.toDataURL();
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
             link.click();
-        }
-        
-        function downloadPages() {
-            const pages = document.querySelectorAll('.page canvas');
-            pages.forEach((pageCanvas, index) => {
-                const link = document.createElement('a');
-                link.download = `cone_pattern_page_${index + 1}.png`;
-                link.href = pageCanvas.toDataURL();
-                link.click();
-            });
+            document.body.removeChild(link);
         }
         
         // Генерация при загрузке страницы
