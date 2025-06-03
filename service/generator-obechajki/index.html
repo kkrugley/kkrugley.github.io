@@ -58,10 +58,10 @@
             border: 1px solid #ddd;
             margin: 20px 0;
             overflow: auto;
-            max-height: 600px;
+            max-height: 600px; /* Ограничение высоты для контейнера холста */
         }
         canvas {
-            display: block;
+            display: block; /* Убирает лишнее пространство под холстом */
             background: white;
         }
         .info {
@@ -87,17 +87,17 @@
         .pages-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 20px; /* Пространство между предпросмотрами страниц */
             margin: 20px 0;
         }
         .page {
-            border: 2px solid #007bff;
+            border: 2px solid #007bff; /* Рамка для каждой страницы */
             position: relative;
-            margin-bottom: 40px;
+            margin-bottom: 40px; /* Пространство для элементов управления под страницей */
         }
         .page-label {
             position: absolute;
-            top: -20px;
+            top: -20px; /* Позиционирование метки над страницей */
             left: 0;
             background: #007bff;
             color: white;
@@ -107,7 +107,7 @@
         }
         .page-controls {
             position: absolute;
-            bottom: -35px;
+            bottom: -35px; /* Позиционирование кнопок под страницей */
             left: 0;
             display: flex;
             gap: 5px;
@@ -115,10 +115,10 @@
         .page-controls button {
             padding: 5px 10px;
             font-size: 12px;
-            margin: 0;
+            margin: 0; /* Убрать стандартные отступы кнопок */
         }
         .download-all-container {
-            background: #d4edda;
+            background: #d4edda; /* Зеленоватый фон для блока скачивания */
             border: 1px solid #c3e6cb;
             padding: 15px;
             border-radius: 4px;
@@ -127,23 +127,24 @@
         .progress {
             width: 100%;
             height: 20px;
-            background: #e9ecef;
+            background: #e9ecef; /* Фон для прогресс-бара */
             border-radius: 10px;
             overflow: hidden;
             margin: 10px 0;
         }
         .progress-bar {
             height: 100%;
-            background: #28a745;
+            background: #28a745; /* Зеленый цвет для заполнения прогресс-бара */
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.3s ease; /* Плавный переход для прогресса */
         }
+        /* Стили для печати */
         @media print {
             body * {
-                visibility: hidden;
+                visibility: hidden; /* Скрыть все элементы по умолчанию */
             }
-            .print-area, .print-area * {
-                visibility: visible;
+            .print-area, .print-area * { /* Область для печати */
+                visibility: visible; /* Сделать видимой только область печати */
             }
             .print-area {
                 position: absolute;
@@ -151,6 +152,32 @@
                 top: 0;
                 margin: 0;
                 border: none;
+                width: 100%; /* Растянуть на всю ширину печати */
+                height: 100%; /* Растянуть на всю высоту печати */
+            }
+            /* Скрыть ненужные элементы интерфейса при печати */
+            .controls, .info, .error, .warning, .download-all-container, .pages-container .page-label, .pages-container .page-controls {
+                display: none !important;
+            }
+            .container { /* Убрать тени и лишние отступы у контейнера */
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                max-width: none;
+            }
+            .canvas-container { /* Убрать рамку у контейнера холста при печати */
+                 border: none;
+                 margin: 0;
+                 max-height: none; /* Снять ограничение высоты */
+            }
+            .page { /* Настройка отображения страниц для печати */
+                border: none !important;
+                margin: 0 !important;
+                page-break-after: always; /* Каждая страница на новом листе */
+            }
+            .page canvas {
+                width: 100% !important; /* Масштабировать холст страницы на ширину печати */
+                height: auto !important;
             }
         }
     </style>
@@ -173,7 +200,7 @@
                 <input type="number" id="height" value="100" step="0.1" min="0.1">
             </div>
             <div class="input-group">
-                <label>&nbsp;</label>
+                <label>&nbsp;</label> <!-- Пустая метка для выравнивания -->
                 <div>
                     <button onclick="generatePattern()">Сгенерировать развертку</button>
                     <button onclick="downloadImage()">Скачать полное изображение</button>
@@ -188,7 +215,8 @@
         <div class="canvas-container">
             <canvas id="canvas"></canvas>
         </div>
-
+        
+        <!-- Контейнер для скачивания всех страниц A4 -->
         <div id="download-all-container" class="download-all-container" style="display: none;">
             <h3>Скачивание всех листов А4</h3>
             <button id="download-all-btn" onclick="downloadAllPages()">Скачать все листы (с задержкой)</button>
@@ -198,203 +226,271 @@
             <div id="download-status"></div>
         </div>
 
+        <!-- Контейнер для отображения разделенных на А4 листы -->
         <div id="pages-container" class="pages-container" style="display: none;"></div>
+        
+        <!-- Скрытый контейнер для печати отдельных листов -->
+        <div id="print-area" class="print-area" style="display: none;"></div>
+
     </div>
 
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         
-        // Масштаб: примерно 3.78 пикселей на мм (96 DPI)
-        const scale = 3.779527559;
+        // Масштаб: пикселей на мм (для экрана ~96 DPI, 1 дюйм = 25.4 мм, 96/25.4 ≈ 3.78)
+        const scale = 3.779527559; 
         
         // Размеры листа А4 в мм
         const A4_WIDTH = 210;
         const A4_HEIGHT = 297;
-        const MARGIN = 10; // отступы в мм
+        const MARGIN = 10; // Поля на листе А4 в мм
         
-        let currentPattern = null;
-        let pageCanvases = [];
-        
+        let currentPattern = null; // Хранит данные текущей сгенерированной развертки
+        let pageCanvases = []; // Массив холстов для разделенных страниц
+
+        // Функции для отображения сообщений
         function showError(message) {
-            document.getElementById('error').textContent = message;
-            document.getElementById('error').style.display = 'block';
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
             document.getElementById('warning').style.display = 'none';
             document.getElementById('info').style.display = 'none';
         }
         
         function showWarning(message) {
-            document.getElementById('warning').innerHTML = message;
-            document.getElementById('warning').style.display = 'block';
+            const warningDiv = document.getElementById('warning');
+            warningDiv.innerHTML = message; // Используем innerHTML для поддержки HTML тегов
+            warningDiv.style.display = 'block';
             document.getElementById('error').style.display = 'none';
         }
         
         function showInfo(message) {
-            document.getElementById('info').innerHTML = message;
-            document.getElementById('info').style.display = 'block';
+            const infoDiv = document.getElementById('info');
+            infoDiv.innerHTML = message; // Используем innerHTML
+            infoDiv.style.display = 'block';
             document.getElementById('error').style.display = 'none';
         }
         
-        function calculatePattern(r1, r2, h) {
-            // Исправленные формулы для развертки усеченного конуса
-            const L = Math.sqrt(h * h + (r1 - r2) * (r1 - r2)); // образующая
-            const R = r1 * L / (r1 - r2); // расстояние от вершины до большего основания
-            const R_small = R - L; // расстояние от вершины до меньшего основания
-            const angle = 2 * Math.PI * (r1 - r2) / L; // угол сектора в радианах
-            
+        // Расчет параметров развертки
+        function calculatePatternParams(r1, r2, h) {
+            const L = Math.sqrt(h * h + (r1 - r2) * (r1 - r2)); // Образующая усеченного конуса
+            const R_large_arc = r1 * L / (r1 - r2); // Радиус большей дуги развертки
+            const R_small_arc = R_large_arc - L;    // Радиус меньшей дуги развертки (или r2 * L / (r1 - r2))
+            const angle_rad = (2 * Math.PI * r1) / R_large_arc; // Угол сектора в радианах
+
             return {
                 L: L,
-                R: R,
-                R_small: R_small,
-                angle: angle,
-                angleDegrees: angle * 180 / Math.PI
+                R: R_large_arc, // Используем R для радиуса большей дуги, как в предыдущих версиях
+                R_small: R_small_arc,
+                angle: angle_rad,
+                angleDegrees: angle_rad * 180 / Math.PI
             };
         }
         
+        // Главная функция генерации развертки
         function generatePattern() {
             const r1 = parseFloat(document.getElementById('r1').value);
             const r2 = parseFloat(document.getElementById('r2').value);
             const h = parseFloat(document.getElementById('height').value);
             
-            if (r1 <= 0 || r2 <= 0 || h <= 0) {
-                showError('Все параметры должны быть больше нуля');
+            // Валидация входных данных
+            if (isNaN(r1) || isNaN(r2) || isNaN(h) || r1 <= 0 || r2 <= 0 || h <= 0) {
+                showError('Все параметры должны быть положительными числами.');
                 return;
             }
-            
             if (r1 <= r2) {
-                showError('Больший радиус R1 должен быть больше меньшего радиуса R2');
+                showError('Больший радиус R1 должен быть больше меньшего радиуса R2.');
                 return;
             }
             
-            // Расчет параметров развертки
-            const pattern = calculatePattern(r1, r2, h);
-            currentPattern = {...pattern, r1, r2, h};
+            const patternParams = calculatePatternParams(r1, r2, h);
+            currentPattern = {...patternParams, r1_orig: r1, r2_orig: r2, h_orig: h}; // Сохраняем параметры
             
-            // Размеры canvas в пикселях
-            const canvasWidth = Math.ceil((pattern.R * 2 + 50) * scale);
-            const canvasHeight = Math.ceil((pattern.R + 50) * scale);
+            // Размеры основного холста (с запасом)
+            // Центр дуг будет смещен для удобного отображения
+            const canvasPadding = 25 * scale; // Отступы внутри холста
+            const apexX = currentPattern.R * scale + canvasPadding; // X-координата вершины сектора
+            const apexY = canvasPadding; // Y-координата вершины сектора (сверху)
+
+            // Ширина холста должна вмещать сектор. Если угол > PI, то ширина может быть до 2*R.
+            // Высота холста, если угол < PI, то R*sin(angle), если > PI, то R*(1+|sin(angle)|).
+            // Для простоты берем с запасом.
+            let mainCanvasWidth = apexX + currentPattern.R * scale + canvasPadding;
+            if (currentPattern.angle > Math.PI) { // Если угол больше PI, сектор шире
+                mainCanvasWidth = apexX + currentPattern.R * Math.abs(Math.cos(currentPattern.angle)) * scale + canvasPadding;
+            }
+             mainCanvasWidth = Math.max(mainCanvasWidth, (currentPattern.R * 2 * scale) + (2 * canvasPadding));
+
+
+            let mainCanvasHeight = apexY + currentPattern.R * scale + canvasPadding;
+             if (currentPattern.angle > Math.PI/2 && currentPattern.angle <= 3*Math.PI/2) {
+                mainCanvasHeight = apexY + currentPattern.R * scale + canvasPadding;
+             } else if (currentPattern.angle > 3*Math.PI/2) {
+                mainCanvasHeight = apexY + currentPattern.R * Math.abs(Math.sin(currentPattern.angle)) * scale + canvasPadding;
+             } else {
+                 mainCanvasHeight = apexY + currentPattern.R * Math.sin(currentPattern.angle) * scale + canvasPadding;
+             }
+             mainCanvasHeight = Math.max(mainCanvasHeight, currentPattern.R * scale + 2 * canvasPadding);
+
+
+            canvas.width = Math.ceil(mainCanvasWidth);
+            canvas.height = Math.ceil(mainCanvasHeight);
             
-            canvas.width = canvasWidth;
-            canvas.height = canvasHeight;
+            drawPatternOnContext(ctx, apexX, apexY, currentPattern, scale);
             
-            // Центр развертки
-            const centerX = pattern.R * scale + 25 * scale;
-            const centerY = 25 * scale;
+            // Расчет габаритов самой развертки для определения необходимости разбиения на А4
+            // Это более точный расчет габаритов самой фигуры, а не всего холста
+            let minPatternX = apexX + currentPattern.R_small * scale;
+            let maxPatternX = apexX + currentPattern.R * scale;
+            let minPatternY = apexY;
+            let maxPatternY = apexY;
+
+            if (currentPattern.angle > 0) {
+                maxPatternY = apexY + currentPattern.R * scale * Math.sin(currentPattern.angle);
+                if (currentPattern.angle > Math.PI / 2) { // Если угол пересекает вертикаль
+                    maxPatternY = apexY + currentPattern.R * scale;
+                }
+                if (currentPattern.angle > Math.PI) { // Если угол пересекает горизонталь снизу
+                     minPatternY = apexY + currentPattern.R * scale * Math.sin(currentPattern.angle); // sin будет отрицательным
+                }
+                 if (currentPattern.angle > 3 * Math.PI / 2) { // Если угол пересекает вертикаль слева снизу
+                    minPatternY = apexY - currentPattern.R * scale;
+                }
+
+
+                minPatternX = apexX + currentPattern.R_small * scale * Math.cos(currentPattern.angle);
+                if (currentPattern.angle > Math.PI / 2) {
+                    minPatternX = apexX + currentPattern.R * scale * Math.cos(currentPattern.angle); // cos будет отрицательным
+                }
+                 if (currentPattern.angle > Math.PI) {
+                    minPatternX = apexX - currentPattern.R * scale;
+                 }
+            }
             
-            // Рисование развертки
-            drawPattern(ctx, centerX, centerY, pattern, scale);
-            
-            // Информация о развертке
-            const developmentWidth = pattern.R * Math.sin(pattern.angle);
-            const developmentHeight = pattern.R - pattern.R_small;
-            
-            let info = `
+            const actualDevelopmentWidthMM = (maxPatternX - minPatternX) / scale;
+            const actualDevelopmentHeightMM = (maxPatternY - minPatternY) / scale;
+
+
+            let infoText = `
                 <strong>Параметры развертки:</strong><br>
-                Образующая L = ${pattern.L.toFixed(2)} мм<br>
-                Радиус большей дуги = ${pattern.R.toFixed(2)} мм<br>
-                Радиус меньшей дуги = ${pattern.R_small.toFixed(2)} мм<br>
-                Угол сектора = ${pattern.angleDegrees.toFixed(2)}°<br>
-                Размеры развертки: ${developmentWidth.toFixed(0)} × ${developmentHeight.toFixed(0)} мм<br>
-                Длина большей дуги = ${(2 * Math.PI * r1).toFixed(2)} мм<br>
-                Длина меньшей дуги = ${(2 * Math.PI * r2).toFixed(2)} мм
+                Образующая L = ${currentPattern.L.toFixed(2)} мм<br>
+                Радиус большей дуги (R) = ${currentPattern.R.toFixed(2)} мм<br>
+                Радиус меньшей дуги (R_small) = ${currentPattern.R_small.toFixed(2)} мм<br>
+                Угол сектора = ${currentPattern.angleDegrees.toFixed(2)}° (${currentPattern.angle.toFixed(3)} рад)<br>
+                Длина большей дуги (L1) = ${(2 * Math.PI * currentPattern.r1_orig).toFixed(2)} мм<br>
+                Длина меньшей дуги (L2) = ${(2 * Math.PI * currentPattern.r2_orig).toFixed(2)} мм<br>
+                Габаритные размеры развертки (прибл.): ${actualDevelopmentWidthMM.toFixed(0)} x ${actualDevelopmentHeightMM.toFixed(0)} мм
             `;
             
-            // Проверка помещения на А4
-            if (developmentWidth > A4_WIDTH - 2*MARGIN || developmentHeight > A4_HEIGHT - 2*MARGIN) {
-                const pagesX = Math.ceil(developmentWidth / (A4_WIDTH - 2*MARGIN));
-                const pagesY = Math.ceil(developmentHeight / (A4_HEIGHT - 2*MARGIN));
+            // Проверка, помещается ли на один лист А4
+            const printableA4Width = A4_WIDTH - 2 * MARGIN;
+            const printableA4Height = A4_HEIGHT - 2 * MARGIN;
+
+            if (actualDevelopmentWidthMM > printableA4Width || actualDevelopmentHeightMM > printableA4Height) {
+                const pagesX = Math.ceil(actualDevelopmentWidthMM / printableA4Width);
+                const pagesY = Math.ceil(actualDevelopmentHeightMM / printableA4Height);
                 const totalPages = pagesX * pagesY;
                 
-                showWarning(`Развертка не помещается на лист А4. Потребуется ${totalPages} листов (${pagesX}×${pagesY})`);
-                
-                info += `<br><strong>Для печати потребуется ${totalPages} листов А4</strong>`;
-                generateA4Pages();
+                showWarning(`Развертка не помещается на один лист А4. Потребуется ${totalPages} листов (${pagesX} по ширине × ${pagesY} по высоте).`);
+                infoText += `<br><strong>Для печати потребуется ${totalPages} листов А4.</strong> Предпросмотр листов ниже.`;
+                generateA4PagesView(minPatternX, minPatternY, actualDevelopmentWidthMM * scale, actualDevelopmentHeightMM*scale); // Передаем начало и размеры фигуры
                 document.getElementById('download-all-container').style.display = 'block';
             } else {
                 document.getElementById('pages-container').style.display = 'none';
                 document.getElementById('download-all-container').style.display = 'none';
+                showWarning(''); // Очистить предупреждение, если оно было
             }
             
-            showInfo(info);
+            showInfo(infoText);
         }
         
-        function drawPattern(context, centerX, centerY, pattern, drawScale) {
-            // Очистка
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        // Функция рисования развертки на заданном контексте
+        function drawPatternOnContext(drawCtx, apexX, apexY, patternData, currentScale) {
+            drawCtx.clearRect(0, 0, drawCtx.canvas.width, drawCtx.canvas.height); // Очистка холста
+            drawCtx.strokeStyle = '#000000';
+            drawCtx.lineWidth = 1;
             
-            // Настройка стилей
-            context.strokeStyle = '#000000';
-            context.lineWidth = 1;
-            context.fillStyle = 'none';
+            // Внешняя дуга
+            drawCtx.beginPath();
+            drawCtx.arc(apexX, apexY, patternData.R * currentScale, 0, patternData.angle);
+            drawCtx.stroke();
             
-            // Рисование внешней дуги
-            context.beginPath();
-            context.arc(centerX, centerY, pattern.R * drawScale, 0, pattern.angle);
-            context.stroke();
+            // Внутренняя дуга
+            drawCtx.beginPath();
+            drawCtx.arc(apexX, apexY, patternData.R_small * currentScale, 0, patternData.angle);
+            drawCtx.stroke();
             
-            // Рисование внутренней дуги
-            context.beginPath();
-            context.arc(centerX, centerY, pattern.R_small * drawScale, 0, pattern.angle);
-            context.stroke();
+            // Боковые линии сектора
+            drawCtx.beginPath();
+            drawCtx.moveTo(apexX + patternData.R_small * currentScale * Math.cos(0), apexY + patternData.R_small * currentScale * Math.sin(0));
+            drawCtx.lineTo(apexX + patternData.R * currentScale * Math.cos(0), apexY + patternData.R * currentScale * Math.sin(0));
+            drawCtx.stroke();
             
-            // Рисование боковых линий
-            context.beginPath();
-            context.moveTo(centerX + pattern.R_small * drawScale, centerY);
-            context.lineTo(centerX + pattern.R * drawScale, centerY);
-            context.stroke();
-            
-            context.beginPath();
-            context.moveTo(
-                centerX + pattern.R_small * drawScale * Math.cos(pattern.angle),
-                centerY + pattern.R_small * drawScale * Math.sin(pattern.angle)
-            );
-            context.lineTo(
-                centerX + pattern.R * drawScale * Math.cos(pattern.angle),
-                centerY + pattern.R * drawScale * Math.sin(pattern.angle)
-            );
-            context.stroke();
-            
-            // Засечки для точности
-            drawMeasurementMarks(context, centerX, centerY, pattern.R * drawScale, pattern.R_small * drawScale, pattern.angle);
+            drawCtx.beginPath();
+            drawCtx.moveTo(apexX + patternData.R_small * currentScale * Math.cos(patternData.angle), apexY + patternData.R_small * currentScale * Math.sin(patternData.angle));
+            drawCtx.lineTo(apexX + patternData.R * currentScale * Math.cos(patternData.angle), apexY + patternData.R * currentScale * Math.sin(patternData.angle));
+            drawCtx.stroke();
+
+            // Засечки (опционально, для наглядности)
+            drawMeasurementMarks(drawCtx, apexX, apexY, patternData.R * currentScale, patternData.R_small * currentScale, patternData.angle);
         }
-        
+
         function drawMeasurementMarks(context, centerX, centerY, radiusBig, radiusSmall, angle) {
-            context.strokeStyle = '#ff0000';
+            context.strokeStyle = '#cc0000'; // Красный цвет для засечек
             context.lineWidth = 0.5;
             
-            const markInterval = Math.PI / 18; // 10 градусов
-            for (let a = 0; a <= angle; a += markInterval) {
-                const x1 = centerX + radiusBig * Math.cos(a);
-                const y1 = centerY + radiusBig * Math.sin(a);
-                const x2 = centerX + radiusSmall * Math.cos(a);
-                const y2 = centerY + radiusSmall * Math.sin(a);
+            const numMarks = Math.max(2, Math.ceil(angle / (Math.PI / 18))); // Засечки примерно каждые 10 градусов
+            for (let i = 0; i <= numMarks; i++) {
+                const currentAngle = (angle / numMarks) * i;
+                const cosA = Math.cos(currentAngle);
+                const sinA = Math.sin(currentAngle);
+
+                // Внешняя дуга
+                let x1 = centerX + radiusBig * cosA;
+                let y1 = centerY + radiusBig * sinA;
+                // Внутренняя дуга
+                let x2 = centerX + radiusSmall * cosA;
+                let y2 = centerY + radiusSmall * sinA;
                 
+                // Линия от центра к краю (для наглядности)
+                // context.beginPath();
+                // context.moveTo(centerX, centerY);
+                // context.lineTo(x1, y1);
+                // context.stroke();
+
+                // Короткие засечки
                 context.beginPath();
                 context.moveTo(x1, y1);
-                context.lineTo(x1 - 10 * Math.cos(a), y1 - 10 * Math.sin(a));
+                context.lineTo(x1 - 5 * cosA, y1 - 5 * sinA); // Направлена к центру
                 context.stroke();
-                
+
                 context.beginPath();
                 context.moveTo(x2, y2);
-                context.lineTo(x2 + 10 * Math.cos(a), y2 + 10 * Math.sin(a));
+                context.lineTo(x2 + 5 * cosA, y2 + 5 * sinA); // Направлена от центра
                 context.stroke();
             }
         }
         
-        function generateA4Pages() {
+        // Генерация и отображение страниц А4
+        function generateA4PagesView(patternOffsetX, patternOffsetY, patternWidthPx, patternHeightPx) {
             if (!currentPattern) return;
             
-            const container = document.getElementById('pages-container');
-            container.innerHTML = '';
-            container.style.display = 'flex';
-            pageCanvases = [];
-            
-            const developmentWidth = currentPattern.R * Math.sin(currentPattern.angle);
-            const developmentHeight = currentPattern.R - currentPattern.R_small;
-            
-            const pagesX = Math.ceil(developmentWidth / (A4_WIDTH - 2*MARGIN));
-            const pagesY = Math.ceil(developmentHeight / (A4_HEIGHT - 2*MARGIN));
-            
+            const pagesContainer = document.getElementById('pages-container');
+            pagesContainer.innerHTML = ''; // Очистка предыдущих страниц
+            pagesContainer.style.display = 'flex';
+            pageCanvases = []; // Очистка массива холстов страниц
+
+            const printableA4WidthPx = (A4_WIDTH - 2 * MARGIN) * scale;
+            const printableA4HeightPx = (A4_HEIGHT - 2 * MARGIN) * scale;
+
+            const pagesX = Math.ceil(patternWidthPx / printableA4WidthPx);
+            const pagesY = Math.ceil(patternHeightPx / printableA4HeightPx);
+
+            // Исходные координаты вершины сектора на главном холсте
+            const originalApexX = currentPattern.R * scale + 25*scale; 
+            const originalApexY = 25*scale;
+
             for (let y = 0; y < pagesY; y++) {
                 for (let x = 0; x < pagesX; x++) {
                     const pageCanvas = document.createElement('canvas');
@@ -402,149 +498,148 @@
                     pageCanvas.height = A4_HEIGHT * scale;
                     
                     const pageCtx = pageCanvas.getContext('2d');
-                    
-                    // Белый фон
-                    pageCtx.fillStyle = 'white';
+                    pageCtx.fillStyle = 'white'; // Белый фон для каждой страницы
                     pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
                     
-                    // Рамка листа
-                    pageCtx.strokeStyle = '#ccc';
+                    // Рамка для области печати на листе А4
+                    pageCtx.strokeStyle = '#cccccc';
                     pageCtx.lineWidth = 1;
-                    pageCtx.strokeRect(MARGIN * scale, MARGIN * scale, 
-                                     (A4_WIDTH - 2*MARGIN) * scale, 
-                                     (A4_HEIGHT - 2*MARGIN) * scale);
+                    pageCtx.strokeRect(MARGIN * scale, MARGIN * scale, printableA4WidthPx, printableA4HeightPx);
                     
-                    // Смещение для части развертки
-                    const offsetX = -x * (A4_WIDTH - 2*MARGIN) * scale;
-                    const offsetY = -y * (A4_HEIGHT - 2*MARGIN) * scale;
-                    
+                    // Смещение для текущей части развертки
+                    // patternOffsetX, patternOffsetY - это координаты левого верхнего угла bounding box фигуры на главном холсте
+                    const tileOffsetX = -x * printableA4WidthPx;
+                    const tileOffsetY = -y * printableA4HeightPx;
+
                     pageCtx.save();
-                    pageCtx.translate(MARGIN * scale + offsetX, MARGIN * scale + offsetY);
+                    // Сначала переносим начало координат в левый верхний угол области печати на А4,
+                    // затем применяем смещение для выбора нужного фрагмента из "бесконечного" полотна развертки,
+                    // при этом начало этого "бесконечного" полотна также смещено на patternOffsetX/Y
+                    pageCtx.translate(MARGIN * scale + tileOffsetX - patternOffsetX, 
+                                      MARGIN * scale + tileOffsetY - patternOffsetY);
                     
-                    // Рисование части развертки
-                    const centerX = currentPattern.R * scale + 25 * scale;
-                    const centerY = 25 * scale;
-                    drawPattern(pageCtx, centerX, centerY, currentPattern, scale);
-                    
+                    // Рисуем всю развертку, но видна будет только часть из-за clip / translate
+                    drawPatternOnContext(pageCtx, originalApexX, originalApexY, currentPattern, scale);
                     pageCtx.restore();
                     
                     // Подпись листа
-                    pageCtx.fillStyle = '#000';
+                    pageCtx.fillStyle = '#000000';
                     pageCtx.font = '12px Arial';
-                    pageCtx.fillText(`Лист ${y * pagesX + x + 1}`, 5, 15);
-                    pageCtx.fillText(`Строка ${y + 1}, Столбец ${x + 1}`, 5, 30);
+                    const pageNum = y * pagesX + x + 1;
+                    pageCtx.fillText(`Лист ${pageNum} (${y+1}-${x+1})`, 5 * scale, 5 * scale); // Небольшой отступ от края холста
                     
-                    // Добавление в массив
-                    pageCanvases.push(pageCanvas);
+                    pageCanvases.push(pageCanvas); // Сохраняем холст для скачивания/печати
                     
-                    // Обертка для страницы
+                    // Создание DOM элементов для отображения страницы
                     const pageDiv = document.createElement('div');
                     pageDiv.className = 'page';
-                    
                     const label = document.createElement('div');
                     label.className = 'page-label';
-                    label.textContent = `Лист ${y * pagesX + x + 1}`;
+                    label.textContent = `Лист ${pageNum}`;
                     
-                    const controls = document.createElement('div');
-                    controls.className = 'page-controls';
-                    
+                    const controlsDiv = document.createElement('div');
+                    controlsDiv.className = 'page-controls';
                     const downloadBtn = document.createElement('button');
                     downloadBtn.textContent = 'Скачать';
-                    downloadBtn.onclick = () => downloadSinglePage(y * pagesX + x, pageCanvas);
-                    
+                    downloadBtn.onclick = () => downloadSinglePage(pageNum -1, pageCanvas); // index is 0-based
                     const printBtn = document.createElement('button');
                     printBtn.textContent = 'Печать';
-                    printBtn.onclick = () => printSinglePage(pageCanvas);
+                    printBtn.onclick = () => printSinglePageCanvas(pageCanvas);
                     
-                    controls.appendChild(downloadBtn);
-                    controls.appendChild(printBtn);
-                    
+                    controlsDiv.appendChild(downloadBtn);
+                    controlsDiv.appendChild(printBtn);
                     pageDiv.appendChild(label);
                     pageDiv.appendChild(pageCanvas);
-                    pageDiv.appendChild(controls);
-                    container.appendChild(pageDiv);
+                    pageDiv.appendChild(controlsDiv);
+                    pagesContainer.appendChild(pageDiv);
                 }
             }
         }
-        
-        function downloadSinglePage(index, pageCanvas) {
-            const link = document.createElement('a');
-            link.download = `cone_pattern_page_${index + 1}.png`;
-            link.href = pageCanvas.toDataURL('image/png');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-        
-        function printSinglePage(pageCanvas) {
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                <head><title>Печать листа</title></head>
-                <body style="margin:0; padding:0;">
-                    <img src="${pageCanvas.toDataURL()}" style="width:100%; height:100%;">
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
-        }
-        
-        async function downloadAllPages() {
-            if (pageCanvases.length === 0) return;
-            
-            const btn = document.getElementById('download-all-btn');
-            const progress = document.getElementById('download-progress');
-            const progressBar = document.getElementById('progress-bar');
-            const status = document.getElementById('download-status');
-            
-            btn.disabled = true;
-            progress.style.display = 'block';
-            status.textContent = 'Начинаем скачивание...';
-            
-            for (let i = 0; i < pageCanvases.length; i++) {
-                try {
-                    const link = document.createElement('a');
-                    link.download = `cone_pattern_page_${i + 1}.png`;
-                    link.href = pageCanvases[i].toDataURL('image/png');
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    
-                    const progress_percent = ((i + 1) / pageCanvases.length) * 100;
-                    progressBar.style.width = progress_percent + '%';
-                    status.textContent = `Скачано ${i + 1} из ${pageCanvases.length} листов`;
-                    
-                    // Задержка между скачиваниями (важно для браузеров)
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                } catch (error) {
-                    status.textContent = `Ошибка при скачивании листа ${i + 1}: ${error.message}`;
-                    break;
-                }
-            }
-            
-            btn.disabled = false;
-            status.textContent = 'Скачивание завершено!';
-            setTimeout(() => {
-                progress.style.display = 'none';
-                status.textContent = '';
-            }, 3000);
-        }
-        
+
+        // Скачивание полного изображения
         function downloadImage() {
+            if (!currentPattern) { showError('Сначала сгенерируйте развертку.'); return; }
             const link = document.createElement('a');
             link.download = 'cone_pattern_full.png';
             link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link); // Необходимо для Firefox
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Скачивание одного листа А4
+        function downloadSinglePage(index, pageCanvasElement) {
+            const link = document.createElement('a');
+            link.download = `cone_pattern_page_${index + 1}.png`;
+            link.href = pageCanvasElement.toDataURL('image/png');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
+
+        // Печать одного листа А4
+        function printSinglePageCanvas(pageCanvasElement) {
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = ''; // Очистить предыдущее содержимое
+            const img = document.createElement('img');
+            img.src = pageCanvasElement.toDataURL('image/png');
+            img.style.width = '100%'; // Масштабировать по ширине области печати
+            img.style.height = 'auto';
+            printArea.appendChild(img);
+            printArea.style.display = 'block'; // Показать область перед печатью
+            
+            window.print(); // Вызвать диалог печати браузера
+
+            printArea.style.display = 'none'; // Скрыть область после печати
+            printArea.innerHTML = ''; // Очистить
+        }
         
-        // Генерация при загрузке страницы
+        // Скачивание всех листов А4 с задержкой
+        async function downloadAllPages() {
+            if (pageCanvases.length === 0) {
+                 showError('Нет листов для скачивания. Сначала сгенерируйте развертку, которая требует разбиения.');
+                 return;
+            }
+            
+            const btn = document.getElementById('download-all-btn');
+            const progressDiv = document.getElementById('download-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const statusDiv = document.getElementById('download-status');
+            
+            btn.disabled = true;
+            progressDiv.style.display = 'block';
+            progressBar.style.width = '0%';
+            statusDiv.textContent = 'Подготовка к скачиванию...';
+            
+            for (let i = 0; i < pageCanvases.length; i++) {
+                statusDiv.textContent = `Скачивание листа ${i + 1} из ${pageCanvases.length}...`;
+                try {
+                    downloadSinglePage(i, pageCanvases[i]);
+                    const progressPercent = ((i + 1) / pageCanvases.length) * 100;
+                    progressBar.style.width = progressPercent + '%';
+                    
+                    // Задержка для предотвращения блокировки браузером
+                    await new Promise(resolve => setTimeout(resolve, 1000)); 
+                } catch (e) {
+                    statusDiv.textContent = `Ошибка при скачивании листа ${i + 1}: ${e.message}`;
+                    showError(`Ошибка скачивания: ${e.message}`);
+                    break; 
+                }
+            }
+            
+            statusDiv.textContent = 'Скачивание завершено!';
+            btn.disabled = false;
+            setTimeout(() => { // Скрыть прогресс через некоторое время
+                progressDiv.style.display = 'none';
+                statusDiv.textContent = '';
+            }, 3000);
+        }
+        
+        // Инициализация при загрузке страницы
         window.onload = function() {
-            generatePattern();
+            generatePattern(); // Сгенерировать развертку с начальными значениями
         };
     </script>
 </body>
 </html>
+
