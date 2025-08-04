@@ -1,0 +1,165 @@
+/* --- General Setup --- */
+:root {
+    --bg-color: #1e1e1e;
+    --text-color: #dcdcdc; 
+    --prompt-color: #569cd6;
+    --green: #33ff99;
+    --red: #f44747;
+    --cyan: #00ffff;
+    --yellow: #ffff00;
+    --magenta: #ff00ff;
+    --dim: rgba(220, 220, 220, 0.6);
+}
+
+body {
+    background-color: #121212;
+    color: var(--text-color);
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#app-container {
+    background-color: var(--bg-color);
+    width: 600px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#output {
+    flex-grow: 1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    scrollbar-width: thin;
+    scrollbar-color: var(--prompt-color) var(--bg-color);
+}
+#output::-webkit-scrollbar { width: 8px; }
+#output::-webkit-scrollbar-track { background: var(--bg-color); }
+#output::-webkit-scrollbar-thumb { background-color: var(--prompt-color); border-radius: 4px; }
+
+#input-line {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 10px;
+}
+
+#prompt { color: var(--prompt-color); margin-right: 8px; }
+
+#input {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    width: 100%;
+    outline: none;
+}
+
+/* --- Rich UI Components --- */
+
+.panel {
+    position: relative;
+    border: 1px solid;
+    padding: 1em;
+    margin-top: 1em;
+    border-radius: 4px;
+}
+
+.panel-title {
+    position: absolute;
+    top: -0.8em;
+    left: 1em;
+    background-color: var(--bg-color);
+    padding: 0 0.5em;
+    font-weight: bold;
+}
+
+/* Panel Color Variants */
+/* NEW: Default/White Panel Style */
+.panel.default-panel { border-color: var(--text-color); }
+.panel.default-panel .panel-title { color: var(--text-color); }
+
+.panel.green { border-color: var(--green); }
+.panel.green .panel-title { color: var(--green); }
+
+.panel.red { border-color: var(--red); }
+.panel.red .panel-title { color: var(--red); }
+
+.panel.cyan { border-color: var(--cyan); }
+.panel.cyan .panel-title { color: var(--cyan); }
+
+.panel.yellow { border-color: var(--yellow); }
+.panel.yellow .panel-title { color: var(--yellow); }
+
+.rich-table {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5em 1.5em;
+}
+
+.table-key { font-weight: bold; text-align: right; }
+
+#status-line {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: none;
+    align-items: center;
+}
+
+.spinner {
+    margin-right: 10px;
+    color: var(--magenta);
+    animation: spin 1s steps(8) infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.dim { color: var(--dim); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.cyan { color: var(--cyan); }
+.yellow { color: var(--yellow); }
+.magenta { color: var(--magenta); }
+
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 640px) {
+    body {
+        /* Оставляем flex для простоты управления, но меняем выравнивание */
+        align-items: flex-start; /* Прижимаем к верху */
+    }
+    
+    #app-container {
+        width: 95%;
+        height: auto; /* Высота по контенту, но не более экрана */
+        max-height: 90vh;
+        margin: 20px auto 0; /* Отступ сверху 20px, по бокам авто, снизу 0 */
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    #status-line {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        padding-top: 10px;
+    }
+}

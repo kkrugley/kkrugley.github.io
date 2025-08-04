@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                 const filename = `${suggestFilename(currentInputText)}.png`;
                 triggerDownload(dataUrl, filename);
-                setStatus(`PNG ready for download: ${filename}`, 'info');
+                setStatus(`PNG downloaded: ${filename}`, 'info');
     
             } catch (error) {
                 console.error("PNG Processing Error:", error);
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const filename = `${suggestFilename(currentInputText)}.dxf`;
                 triggerDownload(url, filename);
                 URL.revokeObjectURL(url);
-                setStatus(`DXF ready for download: ${filename}`, 'info');
+                setStatus(`DXF downloaded: ${filename}`, 'info');
             } catch (error) {
                  console.error("DXF Generation Error:", error);
                  setStatus(`Error generating DXF: ${error.message}`, 'danger');
