@@ -1,0 +1,178 @@
+/* General Styling */
+body {
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Bootstrap light background */
+}
+
+.main-container {
+    min-height: 100vh; /* Ensure container takes full viewport height */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+h1 {
+    color: #343a40; /* Darker grey for heading */
+}
+
+/* Content Wrapper for Animation */
+.content-wrapper {
+    position: relative; /* Needed for absolute positioning of children if used for complex animation */
+    width: 100%;
+    max-width: 600px; /* Adjust max-width as needed */
+    overflow: hidden; /* Hide overflow during slide */
+    transition: height 0.5s ease-in-out; /* Animate height change if needed */
+}
+
+/* Search and Results Area Styling */
+.search-area,
+.results-area {
+    width: 100%;
+    transition: transform 0.5s ease-in-out, opacity 0.4s ease-in-out; /* Smooth transition */
+    backface-visibility: hidden; /* Helps prevent flickering during transform */
+}
+
+/* Slide Animation Classes */
+.search-area.slide-out {
+    transform: translateX(-110%); /* Slide out to the left */
+    opacity: 0;
+    position: absolute; /* Take out of flow during transition */
+    top: 0; /* Align with top */
+}
+
+.results-area.slide-in {
+    transform: translateX(0);
+    opacity: 1;
+    position: relative; /* Bring back into flow */
+}
+
+/* Initial state for results area before animation */
+.results-area {
+    transform: translateX(110%); /* Start offscreen to the right */
+    opacity: 0;
+    position: absolute; /* Start out of flow */
+    top: 0; /* Align with top */
+}
+/* When results are shown (.d-none removed), they will have slide-in applied */
+.results-area:not(.d-none) {
+     position: relative; /* Back to relative positioning */
+     transform: translateX(0);
+     opacity: 1;
+}
+/* Explicitly hide search form when results are shown */
+.results-visible .search-area {
+    display: none; /* Use display none after animation could be simpler */
+    /* Or keep using transform if preferred */
+    /* transform: translateX(-110%);
+    opacity: 0;
+    pointer-events: none; */
+}
+
+
+/* Carousel Styling */
+#vinylCarousel {
+    background-color: #e9ecef; /* Light grey background for carousel area */
+    border-radius: 0.375rem; /* Match Bootstrap's border-radius */
+    overflow: hidden; /* Ensure images don't overflow */
+    min-height: 350px; /* Minimum height */
+    display: flex; /* Help center content if needed */
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-inner {
+    /* Make inner slightly smaller if captions overlap arrows */
+    /* width: 90%; */
+    text-align: center; /* Center images */
+}
+
+.carousel-item img {
+    max-height: 300px; /* Control image height */
+    width: auto;      /* Maintain aspect ratio */
+    max-width: 100%;  /* Prevent image overflow */
+    object-fit: contain; /* Fit image within bounds without stretching */
+    margin: 1rem auto; /* Add some margin */
+    display: block; /* Ensure block display for centering */
+}
+
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    bottom: 1.5rem; /* Adjust position */
+    left: 10%;
+    right: 10%;
+    color: #fff; /* White text */
+}
+
+/* Style carousel controls for better visibility on light backgrounds */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* Darker background */
+    border-radius: 50%;
+    padding: 1rem; /* Make larger */
+    background-size: 50% 50%; /* Adjust icon size within padding */
+}
+
+.carousel-indicators [data-bs-target] {
+     background-color: #6c757d; /* Grey indicators */
+}
+
+.carousel-indicators .active {
+    background-color: #0d6efd; /* Blue active indicator */
+}
+
+/* Loading Spinner */
+#loading p {
+    color: #6c757d; /* Secondary text color */
+}
+
+/* Button Alignment */
+#buy-button {
+    margin-top: 1rem;
+}
+
+/* Error Message Styling */
+#search-error, #api-error {
+     font-size: 0.875em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .content-wrapper {
+        max-width: 95%;
+    }
+    .carousel-caption {
+        /* Adjust caption for smaller screens if needed */
+        font-size: 0.85rem;
+        padding: 0.3rem 0.5rem;
+        bottom: 1rem;
+        left: 5%;
+        right: 5%;
+    }
+    #vinylCarousel {
+        min-height: 300px;
+    }
+    .carousel-item img {
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+     h1 {
+         font-size: 1.75rem;
+     }
+    .search-area .d-flex {
+        flex-direction: column; /* Stack genre and button on small screens */
+        align-items: stretch; /* Make elements full width */
+    }
+    .search-area .flex-grow-1 {
+        margin-right: 0 !important; /* Remove right margin */
+        margin-bottom: 0.5rem; /* Add bottom margin */
+    }
+     #vinylCarousel {
+        min-height: 280px;
+    }
+    .carousel-item img {
+        max-height: 200px;
+    }
+}

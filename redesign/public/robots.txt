@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /test/
+Disallow: /assets/
+Disallow: /gallery/img/
+Disallow: /gallery/styles/
+Sitemap: https://kkrugley.github.io/sitemap.xml

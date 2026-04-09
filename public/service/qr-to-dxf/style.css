@@ -1,0 +1,3 @@
+#qrCodeContainer canvas, #qrCodeContainer img {
+    filter: invert(1);
+}

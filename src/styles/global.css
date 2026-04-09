@@ -1,0 +1,26 @@
+/* redesign/src/styles/global.css */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@font-face {
+  font-family: 'TimesNewArial';
+  src: url('/assets/fonts/TimesNewArialVF.woff2') format('woff2'),
+       url('/assets/fonts/TimesNewArialVF.woff') format('woff');
+  font-display: swap;
+}
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background: #eeeeee;
+  color: #000000;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: #0000EE; text-decoration: underline; }
+a:visited { color: #551A8B; }
+a:hover { text-decoration: none; }
+
+/* Critical project-page styles — inlined here to prevent FOUC */
+.project-container { max-width: 960px; margin: 0 auto; padding: 0 24px 48px; }
+.project-page header { margin-top: 50px; text-align: center; }
+.project-page h1 { font-size: 3rem; text-align: center; font-family: 'Times New Roman', serif; margin-top: 0; }
+.project-menu { text-align: center; margin: 8px 0 20px; font-family: 'Times New Roman', serif; font-size: 1.17em; font-weight: bold; }

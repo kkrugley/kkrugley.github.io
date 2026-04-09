@@ -1,0 +1,237 @@
+---
+// src/pages/gallery/[slug].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Lightbox from '../../components/Lightbox';
+import ModelViewer from '../../components/ModelViewer';
+import MediaSlot from '../../components/MediaSlot';
+import PretextBody from '../../components/PretextBody';
+import EncryptedMailModal from '../../components/EncryptedMailModal.astro';
+import { getCollection } from 'astro:content';
+import '../../styles/project.css';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(p => {
+    const slug = p.id.replace(/\/index\.mdx?$/, '');
+    return { params: { slug }, props: { entry: p } };
+  });
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const year = new Date().getFullYear();
+---
+
+<BaseLayout
+  title={`${data.title} — Pavel Kruhlei`}
+  description={data.tagline}
+  ogImage={data.thumbnail}
+  bodyClass="project-page"
+>
+  <div class="project-container">
+
+    <header>
+      <h1>{data.title}</h1>
+      <nav class="project-menu">
+        <a href="/gallery/">[← Back to Gallery]</a>
+        &nbsp;&nbsp;
+        <a href="#" data-pgp-open>[E-mail Me]</a>
+      </nav>
+    </header>
+
+    {data.gallery.length > 0 && (
+      <Lightbox
+        client:load
+        images={data.gallery}
+      />
+    )}
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+
+    <div class="project-columns">
+
+      <!-- LEFT: Links sidebar -->
+      <aside class="project-sidebar">
+        <h2>Links</h2>
+        {data.links.length > 0 && (
+          <ul>
+            {data.links.map((link: { label: string; url: string }) => (
+              <li>
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {data.model3d && (
+          <>
+            <hr class="sidebar-divider" />
+            <ModelViewer
+              client:load
+              src={data.model3d}
+              iosSrc={data.model3d_ios}
+            />
+          </>
+        )}
+      </aside>
+
+      <!-- RIGHT: Content -->
+      <main class="project-content">
+
+        {data.useTemplate ? (
+          <!-- Portfolio template sections -->
+          <div class="cs-template">
+
+            <div class="cs-meta-row">
+              <span class="cs-label">Case Study</span>
+              <div class="cs-tags">
+                {data.year && <span class="cs-tag">{data.year}</span>}
+                {data.tags.map((tag: string) => <span class="cs-tag">{tag}</span>)}
+              </div>
+            </div>
+
+            <h2 class="cs-title">{data.title}</h2>
+            {data.tagline && <p class="cs-tagline">{data.tagline}</p>}
+
+            <hr class="cs-div" />
+
+            <!-- Hero image / media -->
+            <MediaSlot
+              client:load
+              media={data.hero}
+              className="cs-ph cs-hero"
+              imgStyle={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }}
+            />
+
+            <hr class="cs-div" />
+
+            <!-- 01 Problem + 02 Solution -->
+            <section>
+              <div class="cs-two-col">
+                <div>
+                  <div class="cs-section-head">
+                    <span class="cs-num">01</span>
+                    <h3 class="cs-section-title">Problem</h3>
+                  </div>
+                  {data.problem ? (
+                    <>
+                      <PretextBody client:load text={data.problem.text} />
+                      <MediaSlot
+                        client:load
+                        media={data.problem.image}
+                        className="cs-ph"
+                        style={{ marginTop: '14px', minHeight: '80px' }}
+                      />
+                    </>
+                  ) : <div class="cs-ph" style="min-height:80px" />}
+                </div>
+                <div>
+                  <div class="cs-section-head">
+                    <span class="cs-num">02</span>
+                    <h3 class="cs-section-title">Solution</h3>
+                  </div>
+                  {data.solution ? (
+                    <>
+                      <PretextBody client:load text={data.solution.text} />
+                      <MediaSlot
+                        client:load
+                        media={data.solution.image}
+                        className="cs-ph"
+                        style={{ marginTop: '14px', minHeight: '80px' }}
+                      />
+                    </>
+                  ) : <div class="cs-ph" style="min-height:80px" />}
+                </div>
+              </div>
+            </section>
+
+            <hr class="cs-div" />
+
+            <!-- 03 Process -->
+            <section>
+              <div class="cs-section-head">
+                <span class="cs-num">03</span>
+                <h3 class="cs-section-title">Process</h3>
+              </div>
+              <div class="cs-three-col">
+                {(data.process ?? [undefined, undefined, undefined]).slice(0, 3).map((media: unknown, i: number) => (
+                  <MediaSlot
+                    client:load
+                    media={media as any}
+                    className="cs-ph"
+                    style={{ minHeight: '120px' }}
+                  />
+                ))}
+              </div>
+            </section>
+
+            <hr class="cs-div" />
+
+            <!-- 04 Design Details -->
+            <section>
+              <div class="cs-section-head">
+                <span class="cs-num">04</span>
+                <h3 class="cs-section-title">Design Details</h3>
+              </div>
+              <div class="cs-detail-grid">
+                <div class="cs-body">
+                  {data.details
+                    ? <PretextBody client:load text={data.details.text} />
+                    : <p>Key design decisions and reasoning.</p>
+                  }
+                </div>
+                <MediaSlot
+                  client:load
+                  media={data.details?.image}
+                  className="cs-ph"
+                  style={{ minHeight: '140px' }}
+                />
+              </div>
+            </section>
+
+            <hr class="cs-div" />
+
+            <!-- 05 Final Design -->
+            <section>
+              <div class="cs-section-head">
+                <span class="cs-num">05</span>
+                <h3 class="cs-section-title">Final Design</h3>
+              </div>
+              <div class="cs-final-grid">
+                <MediaSlot
+                  client:load
+                  media={data.final?.main}
+                  className="cs-ph cs-final-main"
+                  imgStyle={{ width: '100%', objectFit: 'cover', borderRadius: '6px' }}
+                />
+                <div class="cs-final-side">
+                  <MediaSlot client:load media={data.final?.detail} className="cs-ph" />
+                  <MediaSlot client:load media={data.final?.context} className="cs-ph" />
+                </div>
+              </div>
+            </section>
+
+          </div>
+        ) : (
+          <!-- Legacy: free-form description -->
+          <div class="legacy-description">
+            <h2>Description</h2>
+            {data.description && (
+              <div set:html={data.description.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br />')} />
+            )}
+          </div>
+        )}
+
+      </main>
+    </div>
+
+  </div>
+
+  <EncryptedMailModal />
+
+  <footer style="text-align:center;padding:16px;font-size:12px;font-family:'Times New Roman',serif;">
+    <p>&copy; Pavel Kruhlei — {year}</p>
+  </footer>
+</BaseLayout>

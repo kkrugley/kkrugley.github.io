@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GalleryGrid from '../../components/GalleryGrid';
+import EncryptedMailModal from '../../components/EncryptedMailModal.astro';
+import { getCollection } from 'astro:content';
+import '../../styles/gallery.css';
+
+const allProjects = await getCollection('projects');
+const projectCards = allProjects.map(p => ({
+  slug: p.id.replace(/\/index\.mdx?$/, ''),
+  title: p.data.title,
+  thumbnail: p.data.thumbnail,
+}));
+const year = new Date().getFullYear();
+---
+
+<BaseLayout title="Gallery — Pavel Kruhlei" bodyClass="gallery-page">
+  <h1>Pavel Kruhlei's Gallery</h1>
+  <h3 class="menu">
+    [&nbsp;<a href="/">Home</a>&nbsp;]&nbsp;
+    [&nbsp;<a href="#" data-pgp-open>E-mail Me</a>&nbsp;]<span class="menu-divider">|</span>[&nbsp;<button id="refresh-btn">Refresh</button>&nbsp;]&nbsp;
+    [&nbsp;<button id="show-all-btn">Show All</button>&nbsp;]
+  </h3>
+
+  <GalleryGrid client:load projects={projectCards} initialCount={8} />
+
+  <EncryptedMailModal />
+
+  <footer>
+    <p>{year} &copy; Pavel Kruhlei &amp; respective copyright holders</p>
+  </footer>
+</BaseLayout>
+
+<script>
+  document.getElementById('refresh-btn')?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('gallery:refresh'));
+  });
+
+  const showAllBtn = document.getElementById('show-all-btn') as HTMLButtonElement | null;
+  let isGrid = false;
+  showAllBtn?.addEventListener('click', () => {
+    if (!isGrid) {
+      isGrid = true;
+      showAllBtn.textContent = 'Scatter';
+      window.dispatchEvent(new CustomEvent('gallery:showAll'));
+    } else {
+      isGrid = false;
+      showAllBtn.textContent = 'Show All';
+      window.dispatchEvent(new CustomEvent('gallery:scatter'));
+    }
+  });
+</script>
