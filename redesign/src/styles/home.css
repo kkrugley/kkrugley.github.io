@@ -1,0 +1,82 @@
+/* redesign/src/styles/home.css */
+body.home {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.card {
+  font-family: 'TimesNewArial', 'Times New Roman', serif;
+  font-variation-settings: "srff" 0, "ital" 0, 'wght' 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  width: 448px;
+  height: 281px;
+  background: #fff;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.address {
+  padding: 20px 24px 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.intro {
+  padding: 0 24px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.intro a { color: #000; text-decoration: none; }
+.intro a:hover { text-decoration: underline; }
+
+/* Clippy */
+#clippy-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  z-index: 100;
+}
+#clippy-container.visible { opacity: 1; visibility: visible; }
+
+#clippy-container img { width: 200px; cursor: pointer; display: block; }
+
+#clippy-tooltip {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: 'Times New Roman', serif;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  margin-bottom: 6px;
+}
+#clippy-tooltip.visible { opacity: 1; visibility: visible; }
+
+/* Mobile */
+@media (orientation: portrait), (max-width: 600px) {
+  .card {
+    transform: translate(-50%, -50%) rotate(95deg);
+  }
+  #clippy-container {
+    bottom: 24px;
+    left: 24px;
+    right: auto;
+  }
+}

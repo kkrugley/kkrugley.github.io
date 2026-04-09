@@ -1,0 +1,121 @@
+/* redesign/src/styles/gallery.css */
+body.gallery-page {
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.gallery-page h1 {
+  font-family: 'Times New Roman', serif;
+  font-size: 1.5rem;
+  font-weight: normal;
+  text-align: right;
+  padding: 8px 16px 4px;
+  text-decoration: underline;
+}
+
+.gallery-page .menu {
+  text-align: right;
+  padding: 0 16px 8px;
+  font-size: 14px;
+}
+
+.gallery-page .menu a,
+.gallery-page .menu button {
+  color: #000;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+.gallery-page .menu a:hover,
+.gallery-page .menu button:hover { text-decoration: underline; }
+
+footer {
+  position: fixed;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Times New Roman', serif;
+}
+
+/* Scattered cards (absolute layout) */
+.gallery-scattered {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+.gallery-card {
+  position: absolute;
+  width: 15%;
+  min-width: 120px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: right;
+  cursor: default;
+}
+
+.gallery-card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.gallery-card a {
+  font-size: 12px;
+  font-family: 'Times New Roman', serif;
+  color: #0000EE;
+}
+
+/* Grid layout (show all state) */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
+}
+
+.gallery-grid .gallery-card {
+  position: static;
+  width: auto;
+  transform: none !important;
+}
+
+/* New cards fade-in */
+.gallery-card.entering {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.gallery-card.entered {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+/* Mobile: always show grid */
+@media (max-width: 800px) {
+  body.gallery-page { overflow-y: auto; }
+  .gallery-scattered {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+    height: auto;
+    overflow-y: auto;
+    position: static;
+  }
+  .gallery-card {
+    position: static;
+    width: auto;
+    transform: none !important;
+  }
+}
