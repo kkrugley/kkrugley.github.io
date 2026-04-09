@@ -7,3 +7,9 @@ dist/
 .env*.local
 redesign/
 docs/
+QWEN.md
+CLAUDE.md
+SKILL.md
+.claude/
+.qwen/
+.worktrees/
