@@ -5,6 +5,5 @@ dist/
 .env
 .env.local
 .env*.local
-redesign/node_modules/
-redesign/dist/
-redesign/.astro/
+redesign/
+docs/
