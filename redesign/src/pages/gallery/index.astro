@@ -1,0 +1,52 @@
+---
+// src/pages/gallery/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GalleryGrid from '../../components/GalleryGrid';
+import { getCollection } from 'astro:content';
+import '../../styles/gallery.css';
+
+const allProjects = await getCollection('projects');
+
+const projectCards = allProjects.map(p => ({
+  // In Astro 6 glob loader, id is the file path like "coffee-stool/index.mdx"
+  // Extract the slug by taking the directory name
+  slug: p.id.replace(/\/index\.mdx$/, '').replace(/\/index\.md$/, ''),
+  title: p.data.title,
+  thumbnail: p.data.thumbnail,
+}));
+
+const year = new Date().getFullYear();
+---
+
+<BaseLayout
+  title="Gallery — Pavel Kruhlei"
+  bodyClass="gallery-page"
+>
+  <h1>Pavel Kruhlei</h1>
+  <nav class="menu">
+    <a href="/">[Home]</a>
+    &nbsp;
+    <a href="mailto:kkrugley@proton.me">[E-mail Me]</a>
+    &nbsp;
+    <button onclick="window.location.reload()">[Refresh]</button>
+    &nbsp;
+    <button id="show-all-btn">[Show All]</button>
+  </nav>
+
+  <GalleryGrid
+    client:load
+    projects={projectCards}
+    initialCount={8}
+  />
+
+  <footer>
+    <p>&copy; Pavel Kruhlei — {year}</p>
+  </footer>
+</BaseLayout>
+
+<script>
+  document.getElementById('show-all-btn')?.addEventListener('click', function() {
+    this.style.display = 'none';
+    window.dispatchEvent(new CustomEvent('gallery:showAll'));
+  });
+</script>
