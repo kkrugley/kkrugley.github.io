@@ -1,12 +1,12 @@
 {
-  "name": "redesign",
+  "name": "kkrugley-portfolio",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "test": "vitest run"
   },
   "keywords": [],
