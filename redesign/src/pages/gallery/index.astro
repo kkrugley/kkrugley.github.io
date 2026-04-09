@@ -1,52 +1,40 @@
 ---
-// src/pages/gallery/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GalleryGrid from '../../components/GalleryGrid';
 import { getCollection } from 'astro:content';
 import '../../styles/gallery.css';
 
 const allProjects = await getCollection('projects');
-
 const projectCards = allProjects.map(p => ({
-  // In Astro 6 glob loader, id is the file path like "coffee-stool/index.mdx"
-  // Extract the slug by taking the directory name
-  slug: p.id.replace(/\/index\.mdx$/, '').replace(/\/index\.md$/, ''),
+  slug: p.id.replace(/\/index\.mdx?$/, ''),
   title: p.data.title,
   thumbnail: p.data.thumbnail,
 }));
-
 const year = new Date().getFullYear();
 ---
 
-<BaseLayout
-  title="Gallery — Pavel Kruhlei"
-  bodyClass="gallery-page"
->
-  <h1>Pavel Kruhlei</h1>
-  <nav class="menu">
-    <a href="/">[Home]</a>
-    &nbsp;
-    <a href="mailto:kkrugley@proton.me">[E-mail Me]</a>
-    &nbsp;
-    <button onclick="window.location.reload()">[Refresh]</button>
-    &nbsp;
-    <button id="show-all-btn">[Show All]</button>
-  </nav>
+<BaseLayout title="Gallery — Pavel Kruhlei" bodyClass="gallery-page">
+  <h1>Pavel Kruhlei's Gallery</h1>
+  <h3 class="menu">
+    [&nbsp;<a href="/">Home</a>&nbsp;]&nbsp;
+    [&nbsp;<a href="mailto:kkrugley@proton.me">E-mail Me</a>&nbsp;]&nbsp;
+    [&nbsp;<button id="refresh-btn">Refresh</button>&nbsp;]&nbsp;
+    [&nbsp;<button id="show-all-btn">Show All</button>&nbsp;]
+  </h3>
 
-  <GalleryGrid
-    client:load
-    projects={projectCards}
-    initialCount={8}
-  />
+  <GalleryGrid client:load projects={projectCards} initialCount={8} />
 
   <footer>
-    <p>&copy; Pavel Kruhlei — {year}</p>
+    <p>{year} &copy; Pavel Kruhlei &amp; respective copyright holders</p>
   </footer>
 </BaseLayout>
 
 <script>
+  document.getElementById('refresh-btn')?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('gallery:refresh'));
+  });
   document.getElementById('show-all-btn')?.addEventListener('click', function() {
-    this.style.display = 'none';
+    (this as HTMLButtonElement).style.display = 'none';
     window.dispatchEvent(new CustomEvent('gallery:showAll'));
   });
 </script>

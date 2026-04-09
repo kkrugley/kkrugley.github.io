@@ -19,9 +19,8 @@ export default function Lightbox({ images, alts = [] }: Props) {
 
   const close = useCallback(() => setModalOpen(false), []);
 
-  // Keyboard navigation
+  // Keyboard navigation — always active (navigates thumbnails even when modal closed)
   useEffect(() => {
-    if (!modalOpen) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') prev();
       else if (e.key === 'ArrowRight') next();
@@ -29,11 +28,10 @@ export default function Lightbox({ images, alts = [] }: Props) {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [modalOpen, prev, next, close]);
+  }, [prev, next, close]);
 
-  // Touch swipe
+  // Touch swipe — always active
   useEffect(() => {
-    if (!modalOpen) return;
     let startX = 0;
     const onTouchStart = (e: TouchEvent) => { startX = e.changedTouches[0].screenX; };
     const onTouchEnd = (e: TouchEvent) => {
@@ -46,7 +44,7 @@ export default function Lightbox({ images, alts = [] }: Props) {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchend', onTouchEnd);
     };
-  }, [modalOpen, prev, next]);
+  }, [prev, next]);
 
   if (images.length === 0) return null;
 

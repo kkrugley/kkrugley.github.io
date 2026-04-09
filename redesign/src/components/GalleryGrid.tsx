@@ -109,6 +109,31 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
     return () => window.removeEventListener('gallery:showAll', handler);
   }, [handleShowAll]);
 
+  // Listen for refresh — pick new random subset, return to scattered state
+  useEffect(() => {
+    const handler = () => {
+      const next = getRandomSubset(projects, initialCount);
+      const nextSet = new Set(next.map(p => p.slug));
+      setIsGrid(false);
+      setNewSlugs(new Set());
+      setEnteredSlugs(new Set());
+      setVisibleSlugs(nextSet);
+      setTimeout(() => {
+        const container = containerRef.current;
+        if (!container) return;
+        let { width, height } = container.getBoundingClientRect();
+        if (width === 0 || height === 0) { width = window.innerWidth; height = window.innerHeight - 130; }
+        const posMap = new Map<string, { left: number; top: number; rotation: number }>();
+        next.forEach(p => {
+          posMap.set(p.slug, { ...getScatterPosition(width, height), rotation: getRandomRotation() });
+        });
+        setPositions(posMap);
+      }, 0);
+    };
+    window.addEventListener('gallery:refresh', handler);
+    return () => window.removeEventListener('gallery:refresh', handler);
+  }, [projects, initialCount]);
+
   const visibleProjects = projects.filter(p => visibleSlugs.has(p.slug));
 
   if (!isGrid) {

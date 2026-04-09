@@ -1,64 +1,80 @@
 /* redesign/src/styles/gallery.css */
 body.gallery-page {
+  font-family: 'Times New Roman', serif;
+  background-color: #eeeeee;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  min-height: 100vh;
 }
 
 .gallery-page h1 {
-  font-family: 'Times New Roman', serif;
-  font-size: 1.5rem;
+  text-align: center;
+  font-size: 3rem;
+  color: black;
   font-weight: normal;
-  text-align: right;
-  padding: 8px 16px 4px;
-  text-decoration: underline;
+  margin-top: 50px;
+  position: relative;
+  z-index: 2;
 }
 
 .gallery-page .menu {
-  text-align: right;
-  padding: 0 16px 8px;
-  font-size: 14px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
 }
 
-.gallery-page .menu a,
+.gallery-page a,
+.gallery-page .menu a {
+  text-decoration: underline;
+  color: #0000EE;
+}
+.gallery-page a:visited { color: #0000EE; }
+.gallery-page a:hover { text-decoration: underline; }
+.gallery-page a:active { color: #FF0000; }
+
 .gallery-page .menu button {
-  color: #000;
-  text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
   padding: 0;
+  color: #0000EE;
+  text-decoration: underline;
 }
-.gallery-page .menu a:hover,
 .gallery-page .menu button:hover { text-decoration: underline; }
+.gallery-page .menu button:active { color: #FF0000; }
 
 footer {
-  position: fixed;
-  bottom: 8px;
-  left: 0;
-  right: 0;
   text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+footer p {
+  color: #D3D3D3;
+  font-style: italic;
   font-size: 12px;
-  font-family: 'Times New Roman', serif;
 }
 
-/* Scattered cards (absolute layout) */
+/* Scattered cards */
 .gallery-scattered {
   position: relative;
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 130px);
   overflow: hidden;
 }
 
 .gallery-card {
   position: absolute;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  text-align: right;
+  padding: 10px;
   width: 15%;
   min-width: 120px;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: right;
   cursor: default;
 }
 
@@ -68,26 +84,36 @@ footer {
   display: block;
 }
 
-.gallery-card a {
-  font-size: 12px;
-  font-family: 'Times New Roman', serif;
+.gallery-card > a {
+  text-decoration: underline;
   color: #0000EE;
+  font-style: italic;
+  font-size: 12px;
 }
 
-/* Grid layout (show all state) */
+/* Grid layout */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
   padding: 16px;
   overflow-y: auto;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 130px);
 }
 
 .gallery-grid .gallery-card {
   position: static;
   width: auto;
   transform: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-grid .gallery-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
 }
 
 /* New cards fade-in */
@@ -101,9 +127,10 @@ footer {
   transition: opacity 300ms ease-out, transform 300ms ease-out;
 }
 
-/* Mobile: always show grid */
+/* Mobile */
 @media (max-width: 800px) {
   body.gallery-page { overflow-y: auto; }
+  .gallery-page h1 { font-size: 2rem; margin-top: 20px; }
   .gallery-scattered {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -117,5 +144,11 @@ footer {
     position: static;
     width: auto;
     transform: none !important;
+  }
+  .gallery-scattered .gallery-card img,
+  .gallery-grid .gallery-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
   }
 }
