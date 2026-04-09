@@ -87,7 +87,7 @@ footer {
 .gallery-grid .gallery-card {
   position: static;
   width: auto;
-  transform: none !important;
+  transform: none;
 }
 
 /* New cards fade-in */

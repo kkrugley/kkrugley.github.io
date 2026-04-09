@@ -20,8 +20,9 @@ export default function ModelViewer({ src, iosSrc, label = 'View 3D Model' }: Pr
     const script = document.createElement('script');
     script.type = 'module';
     script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
-    script.onload = () => setScriptLoaded(true);
     document.head.appendChild(script);
+    // Wait for the custom element to be defined rather than relying on onload timing
+    customElements.whenDefined('model-viewer').then(() => setScriptLoaded(true));
   }, [open, scriptLoaded]);
 
   // Close on Escape key

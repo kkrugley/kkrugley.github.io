@@ -44,7 +44,14 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
 
     const container = containerRef.current;
     if (!container) return;
-    const { width, height } = container.getBoundingClientRect();
+
+    let { width, height } = container.getBoundingClientRect();
+
+    // If layout hasn't painted yet, fallback to viewport dimensions
+    if (width === 0 || height === 0) {
+      width = window.innerWidth;
+      height = window.innerHeight - 80;
+    }
 
     const posMap = new Map<string, { left: number; top: number; rotation: number }>();
     initial.forEach(p => {
@@ -90,7 +97,7 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
 
         // Fade in new cards shortly after
         setTimeout(() => {
-          setEnteredSlugs(new Set(projects.map(p => p.slug)));
+          setEnteredSlugs(incoming);
         }, 50);
       });
     });
