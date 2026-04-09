@@ -20,11 +20,27 @@ function getRandomRotation(): number {
   return Math.random() * 90 - 45;
 }
 
-function getScatterPosition(containerW: number, containerH: number, cardW = 200, cardH = 220) {
-  return {
-    left: Math.random() * Math.max(0, containerW - cardW),
-    top: Math.random() * Math.max(0, containerH - cardH),
-  };
+// Zone-based scatter: divides screen into a grid, places one card per zone.
+// Returns positions for `count` cards, ensuring even coverage of the full screen.
+function getZonedScatterPositions(count: number, containerW: number, containerH: number, cardW = 180, cardH = 220): Array<{ left: number; top: number }> {
+  const cols = 4;
+  const rows = Math.ceil(count / cols);
+  const zoneW = containerW / cols;
+  const zoneH = containerH / rows;
+
+  // Build all zones, shuffle, take `count`
+  const zones: { col: number; row: number }[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      zones.push({ col: c, row: r });
+    }
+  }
+  const shuffled = zones.sort(() => Math.random() - 0.5).slice(0, count);
+
+  return shuffled.map(({ col, row }) => ({
+    left: col * zoneW + Math.random() * Math.max(0, zoneW - cardW),
+    top: row * zoneH + Math.random() * Math.max(0, zoneH - cardH),
+  }));
 }
 
 export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
@@ -42,20 +58,13 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
     const initialSet = new Set(initial.map(p => p.slug));
     setVisibleSlugs(initialSet);
 
-    const container = containerRef.current;
-    if (!container) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    let { width, height } = container.getBoundingClientRect();
-
-    // If layout hasn't painted yet, fallback to viewport dimensions
-    if (width === 0 || height === 0) {
-      width = window.innerWidth;
-      height = window.innerHeight - 80;
-    }
-
+    const zonedPositions = getZonedScatterPositions(initial.length, w, h);
     const posMap = new Map<string, { left: number; top: number; rotation: number }>();
-    initial.forEach(p => {
-      posMap.set(p.slug, { ...getScatterPosition(width, height), rotation: getRandomRotation() });
+    initial.forEach((p, i) => {
+      posMap.set(p.slug, { ...zonedPositions[i], rotation: getRandomRotation() });
     });
     setPositions(posMap);
   }, [projects, initialCount]);
@@ -75,23 +84,25 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
     setIsGrid(true);
 
     requestAnimationFrame(() => {
-      // FLIP: apply Invert transforms to snap existing cards back to First position
-      cardRefs.current.forEach((el, slug) => {
-        if (incoming.has(slug)) return;
+      // FLIP: apply Invert — snap each card back to its scattered position + rotation
+      const existingEntries = [...cardRefs.current.entries()].filter(([slug]) => !incoming.has(slug));
+      existingEntries.forEach(([slug, el]) => {
         const first = rects.get(slug);
         if (!first) return;
         const last = el.getBoundingClientRect();
         const dx = first.left - last.left;
         const dy = first.top - last.top;
-        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        const rotation = positions.get(slug)?.rotation ?? 0;
+        el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotation}deg)`;
         el.style.transition = 'none';
       });
 
       requestAnimationFrame(() => {
-        // FLIP: Play — animate from inverted position to natural grid position
-        cardRefs.current.forEach((el, slug) => {
-          if (incoming.has(slug)) return;
-          el.style.transition = 'transform 300ms ease-out';
+        // FLIP: Play — slide + straighten into grid position with stagger
+        existingEntries.forEach(([slug, el], index) => {
+          if (!rects.get(slug)) return;
+          const delay = index * 25;
+          el.style.transition = `transform 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}ms`;
           el.style.transform = '';
         });
 
@@ -101,13 +112,38 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
         }, 50);
       });
     });
-  }, [projects, visibleSlugs]);
+  }, [projects, visibleSlugs, positions]);
 
   useEffect(() => {
     const handler = () => handleShowAll();
     window.addEventListener('gallery:showAll', handler);
     return () => window.removeEventListener('gallery:showAll', handler);
   }, [handleShowAll]);
+
+  // Listen for scatter — pick new random subset, return to scattered state
+  const handleScatter = useCallback(() => {
+    const next = getRandomSubset(projects, initialCount);
+    const nextSet = new Set(next.map(p => p.slug));
+    setIsGrid(false);
+    setNewSlugs(new Set());
+    setEnteredSlugs(new Set());
+    setVisibleSlugs(nextSet);
+    setTimeout(() => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const zonedPositions = getZonedScatterPositions(next.length, w, h);
+      const posMap = new Map<string, { left: number; top: number; rotation: number }>();
+      next.forEach((p, i) => {
+        posMap.set(p.slug, { ...zonedPositions[i], rotation: getRandomRotation() });
+      });
+      setPositions(posMap);
+    }, 0);
+  }, [projects, initialCount]);
+
+  useEffect(() => {
+    window.addEventListener('gallery:scatter', handleScatter);
+    return () => window.removeEventListener('gallery:scatter', handleScatter);
+  }, [handleScatter]);
 
   // Listen for refresh — pick new random subset, return to scattered state
   useEffect(() => {
@@ -119,13 +155,12 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
       setEnteredSlugs(new Set());
       setVisibleSlugs(nextSet);
       setTimeout(() => {
-        const container = containerRef.current;
-        if (!container) return;
-        let { width, height } = container.getBoundingClientRect();
-        if (width === 0 || height === 0) { width = window.innerWidth; height = window.innerHeight - 130; }
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const zonedPositions = getZonedScatterPositions(next.length, w, h);
         const posMap = new Map<string, { left: number; top: number; rotation: number }>();
-        next.forEach(p => {
-          posMap.set(p.slug, { ...getScatterPosition(width, height), rotation: getRandomRotation() });
+        next.forEach((p, i) => {
+          posMap.set(p.slug, { ...zonedPositions[i], rotation: getRandomRotation() });
         });
         setPositions(posMap);
       }, 0);

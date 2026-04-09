@@ -5,6 +5,7 @@ import Lightbox from '../../components/Lightbox';
 import ModelViewer from '../../components/ModelViewer';
 import MediaSlot from '../../components/MediaSlot';
 import PretextBody from '../../components/PretextBody';
+import EncryptedMailModal from '../../components/EncryptedMailModal.astro';
 import { getCollection } from 'astro:content';
 import '../../styles/project.css';
 
@@ -34,7 +35,7 @@ const year = new Date().getFullYear();
       <nav class="project-menu">
         <a href="/gallery/">[← Back to Gallery]</a>
         &nbsp;&nbsp;
-        <a href="mailto:kkrugley@proton.me">[E-mail Me]</a>
+        <a href="#" data-pgp-open>[E-mail Me]</a>
       </nav>
     </header>
 
@@ -227,6 +228,8 @@ const year = new Date().getFullYear();
     </div>
 
   </div>
+
+  <EncryptedMailModal />
 
   <footer style="text-align:center;padding:16px;font-size:12px;font-family:'Times New Roman',serif;">
     <p>&copy; Pavel Kruhlei — {year}</p>

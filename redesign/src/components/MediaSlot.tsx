@@ -64,7 +64,7 @@ export default function MediaSlot({ media, className = 'cs-ph', style, imgStyle 
         alt={alt || '3D model'}
         camera-controls
         auto-rotate
-        style={{ width: '100%', height: '280px', borderRadius: '6px', background: '#f3f3f3' }}
+        style={{ width: '100%', height: '280px', borderRadius: '6px', background: 'transparent' }}
       />
     );
   }
