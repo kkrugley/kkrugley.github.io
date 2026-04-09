@@ -1,0 +1,33 @@
+{
+  "name": "redesign",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.3",
+    "@astrojs/react": "^5.0.3",
+    "@google/model-viewer": "^4.2.0",
+    "astro": "^6.1.5",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/ui": "^4.1.4",
+    "jsdom": "^29.0.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.4"
+  }
+}
