@@ -73,6 +73,11 @@ export class GitHubClient {
     );
   }
 
+  async listFiles(prefix: string): Promise<TreeNode[]> {
+    const tree = await this.getFileTree();
+    return tree.filter(n => n.type === 'blob' && n.path.startsWith(prefix));
+  }
+
   async getFile(path: string): Promise<{ content: string; sha: string }> {
     const data = await this.getFileContent(path);
     const content = atob(data.content);
@@ -109,8 +114,12 @@ export class GitHubClient {
 
   async uploadBinary(path: string, file: File, message: string): Promise<void> {
     const buffer = await file.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
-    const cleanBase64 = base64.replace(/^data:.*?;base64,/, '');
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const cleanBase64 = btoa(binary);
 
     await this.request(`${BASE_URL}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`, {
       method: 'PUT',

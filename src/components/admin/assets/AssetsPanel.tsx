@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import type { GitHubClient } from '../auth/GitHubClient';
 
 type EditorMode = 'visual' | 'code';
@@ -44,10 +44,38 @@ function getTargetPath(name: string, slug: string): { repoPath: string; publicPa
 
 export function AssetsPanel({ slug, client, mode }: AssetsPanelProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [loadingExisting, setLoadingExisting] = useState(true);
   const [uploading, setUploading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load existing files from repo on mount / when slug changes
+  useEffect(() => {
+    if (!slug) return;
+    setLoadingExisting(true);
+    const imgPrefix = `public/gallery/${slug}/img/`;
+    client.listFiles(imgPrefix)
+      .then(nodes => {
+        const existing: UploadedFile[] = nodes
+          .filter(n => n.path !== `${imgPrefix}.gitkeep`)
+          .map(n => {
+            const name = n.path.split('/').at(-1) ?? n.path;
+            const ext = name.toLowerCase().slice(name.lastIndexOf('.'));
+            const type = MODEL_EXTS.includes(ext) ? '3d' : 'image';
+            return {
+              name,
+              path: n.path,
+              publicPath: '/' + n.path.replace(/^public\//, ''),
+              size: 0,
+              type,
+            };
+          });
+        setFiles(existing);
+      })
+      .catch(() => { /* silently ignore listing errors */ })
+      .finally(() => setLoadingExisting(false));
+  }, [slug, client]);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -68,13 +96,11 @@ export function AssetsPanel({ slug, client, mode }: AssetsPanelProps) {
     const { repoPath, publicPath } = getTargetPath(file.name, slug);
     try {
       await client.uploadBinary(repoPath, file, `Upload asset: ${file.name}`);
-      setFiles(prev => [...prev, {
-        name: file.name,
-        path: repoPath,
-        publicPath,
-        size: file.size,
-        type: getFileType(file.name)!,
-      }]);
+      setFiles(prev => {
+        const exists = prev.some(f => f.path === repoPath);
+        const entry: UploadedFile = { name: file.name, path: repoPath, publicPath, size: file.size, type: getFileType(file.name)! };
+        return exists ? prev.map(f => f.path === repoPath ? entry : f) : [...prev, entry];
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -147,24 +173,27 @@ export function AssetsPanel({ slug, client, mode }: AssetsPanelProps) {
       )}
 
       {/* File list label */}
-      {files.length > 0 && (
+      {(files.length > 0 || loadingExisting) && (
         <div style={{ padding: '0 10px', fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4 }}>
-          Uploaded
+          Files
         </div>
       )}
 
       {/* File list */}
       <div style={{ overflowY: 'auto', flex: 1, padding: '0 10px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {loadingExisting && !files.length && (
+          <div style={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', padding: '8px 0' }}>Loading...</div>
+        )}
         {files.map(f => (
           <div key={f.path} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 4, padding: '5px 8px', display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ fontSize: 14 }}>{f.type === '3d' ? '📦' : '🖼'}</span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 10, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
-              <div style={{ fontSize: 9, color: '#94a3b8' }}>{(f.size / 1024).toFixed(0)} KB</div>
+              <div style={{ fontSize: 10, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={f.publicPath}>{f.name}</div>
+              {f.size > 0 && <div style={{ fontSize: 9, color: '#94a3b8' }}>{(f.size / 1024).toFixed(0)} KB</div>}
             </div>
             <button
               onClick={() => handleInsert(f.publicPath)}
-              title={mode === 'code' ? 'Copy path' : 'Insert path into focused field'}
+              title={mode === 'code' ? `Copy: ${f.publicPath}` : `Insert: ${f.publicPath}`}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#94a3b8', padding: 2, lineHeight: 1 }}
             >
               ⧉
