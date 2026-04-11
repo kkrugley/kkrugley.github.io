@@ -10,6 +10,8 @@ docs/
 QWEN.md
 CLAUDE.md
 SKILL.md
+skills-lock.json
+.agents/
 .claude/
 .qwen/
 .worktrees/

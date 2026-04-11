@@ -56,6 +56,17 @@ footer {
   pointer-events: none;
 }
 
+/* Grid mode: restore normal page scroll, unfix header/footer */
+body.gallery-page.gallery-grid-mode {
+  overflow: auto;
+}
+
+body.gallery-page.gallery-grid-mode footer {
+  position: static;
+  padding: 24px 0 16px;
+  pointer-events: auto;
+}
+
 .menu-divider {
   color: #aaa;
   margin: 0 4px;
@@ -107,11 +118,10 @@ footer p {
 /* Grid layout */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 16px;
   padding: 16px;
-  overflow-y: auto;
-  max-height: 100vh;
+  margin-top: 48px;
 }
 
 .gallery-grid .gallery-card {
@@ -124,9 +134,10 @@ footer p {
 
 .gallery-grid .gallery-card img {
   width: 100%;
-  height: 160px;
+  height: 192px;
   object-fit: cover;
   display: block;
+  margin-bottom: 10px;
 }
 
 /* New cards fade-in */

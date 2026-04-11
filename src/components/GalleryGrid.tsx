@@ -69,6 +69,15 @@ export default function GalleryGrid({ projects, initialCount = 8 }: Props) {
     setPositions(posMap);
   }, [projects, initialCount]);
 
+  // Toggle body class for grid mode (enables page scroll, unsticks footer)
+  useEffect(() => {
+    if (isGrid) {
+      document.body.classList.add('gallery-grid-mode');
+    } else {
+      document.body.classList.remove('gallery-grid-mode');
+    }
+  }, [isGrid]);
+
   // Listen for show-all trigger from the Astro page
   const handleShowAll = useCallback(() => {
     // FLIP: record First positions of currently visible cards
