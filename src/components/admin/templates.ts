@@ -29,7 +29,10 @@ tagline: "Project description"
 year: ${new Date().getFullYear()}
 tags: []
 thumbnail: /gallery/${slug}/img/1.jpg
-links: []
+links:
+  -
+    label: ""
+    url: ""
 useTemplate: true
 hero: /gallery/${slug}/img/1.jpg
 problem:
@@ -64,7 +67,10 @@ gallery: []
 useTemplate: false
 description: |
   Describe your project here.
-links: []
+links:
+  -
+    label: ""
+    url: ""
 ---
 
 Add your project content here.
