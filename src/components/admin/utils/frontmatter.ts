@@ -132,9 +132,9 @@ function parseObjectOrArray(lines: string[], startIndex: number, baseIndent: num
     const valuePart = trimmed.slice(colonPos + 1).trim();
     
     if (valuePart === '') {
-      const { obj: nested, consumed } = parseObjectOrArray(lines, i + 1, indent);
+      const { obj: nested, consumed } = parseObjectOrArray(lines, i + 1, indent + 2);
       obj[key] = nested;
-      i += consumed;
+      i += consumed + 1;
     } else if (valuePart.startsWith('[') && valuePart.endsWith(']')) {
       obj[key] = parseInlineArray(valuePart);
       i++;
@@ -351,7 +351,7 @@ function serializeValue(key: string, value: any, indent: number): string {
   }
   
   if (typeof value === 'string') {
-    if (value.includes('\n') || value.includes(':') || value.includes('#') || 
+    if (!value || value.includes('\n') || value.includes(':') || value.includes('#') ||
         value.includes('"') || value.startsWith(' ') || value.endsWith(' ')) {
       const escaped = value.replace(/"/g, '\\"');
       return `${prefix}${key}: "${escaped}"`;
