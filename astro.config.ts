@@ -7,4 +7,7 @@ export default defineConfig({
   site: 'https://kkrugley.github.io',
   integrations: [react(), mdx()],
   output: 'static',
+  server: {
+    host: '0.0.0.0',
+  },
 });

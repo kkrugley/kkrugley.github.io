@@ -5,7 +5,7 @@ import { CodeEditor } from './CodeEditor';
 import { FrontmatterEditor } from './FrontmatterEditor';
 import { AssetsPanel } from '../assets/AssetsPanel';
 
-export type EditorMode = 'visual' | 'code';
+export type EditorMode = 'visual' | 'code' | 'preview';
 
 interface EditorLayoutProps {
   client: GitHubClient;
@@ -17,7 +17,8 @@ interface EditorLayoutProps {
 }
 
 export function EditorLayout({ client, filePath, initialContent, initialSha, onSaveSuccess, onDeleteSuccess }: EditorLayoutProps) {
-  const [mode, setMode] = useState<EditorMode>('code');
+  const [mode, setMode] = useState<EditorMode>('visual');
+  const [previewKey, setPreviewKey] = useState(0);
   const [content, setContent] = useState(initialContent);
   const [sha, setSha] = useState(initialSha);
   const [commitMsg, setCommitMsg] = useState('');
@@ -33,7 +34,7 @@ export function EditorLayout({ client, filePath, initialContent, initialSha, onS
     setContent(initialContent);
     setSha(initialSha);
     setCommitMsg('');
-    setMode('code');
+    setMode('visual');
     setShowDeleteConfirm(false);
   }, [filePath, initialContent, initialSha]);
 
@@ -101,10 +102,10 @@ export function EditorLayout({ client, filePath, initialContent, initialSha, onS
 
         {/* Mode switcher */}
         <div style={{ marginLeft: 'auto', display: 'flex', border: '1px solid #e2e8f0', borderRadius: 5, overflow: 'hidden' }}>
-          {(['visual', 'code'] as EditorMode[]).map(m => (
+          {(['visual', 'code', 'preview'] as EditorMode[]).map(m => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => { setMode(m); if (m === 'preview') setPreviewKey(k => k + 1); }}
               style={{
                 padding: '3px 12px',
                 border: 'none',
@@ -115,10 +116,19 @@ export function EditorLayout({ client, filePath, initialContent, initialSha, onS
                 fontWeight: mode === m ? 500 : 400,
               }}
             >
-              {m === 'visual' ? 'Visual' : 'Code'}
+              {m === 'visual' ? 'Visual' : m === 'code' ? 'Code' : 'Preview'}
             </button>
           ))}
         </div>
+        {mode === 'preview' && (
+          <button
+            onClick={() => setPreviewKey(k => k + 1)}
+            title="Refresh preview"
+            style={{ marginLeft: 6, padding: '3px 8px', border: '1px solid #e2e8f0', borderRadius: 5, background: '#f8fafc', color: '#64748b', fontSize: 11, cursor: 'pointer' }}
+          >
+            ↺
+          </button>
+        )}
       </div>
 
       {/* Content: editor (left) + assets (right) */}
@@ -128,18 +138,32 @@ export function EditorLayout({ client, filePath, initialContent, initialSha, onS
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {mode === 'code' ? (
             <CodeEditor value={content} onChange={setContent} />
-          ) : (
+          ) : mode === 'visual' ? (
             <div style={{ flex: 1, overflowY: 'auto', padding: 16 }}>
               <FrontmatterEditor
                 frontmatter={parsed.frontmatter}
                 onChange={handleFrontmatterChange}
               />
             </div>
+          ) : (
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+              {isDirty && (
+                <div style={{ padding: '4px 12px', background: '#fef3c7', borderBottom: '1px solid #fde68a', fontSize: 10, color: '#92400e' }}>
+                  Есть несохранённые изменения — preview показывает последнее сохранённое состояние
+                </div>
+              )}
+              <iframe
+                key={previewKey}
+                src={`/gallery/${slug}`}
+                style={{ flex: 1, border: 'none', width: '100%' }}
+                title="Page preview"
+              />
+            </div>
           )}
         </div>
 
-        {/* Right: assets panel */}
-        <AssetsPanel slug={slug} client={client} mode={mode} />
+        {/* Right: assets panel (hidden in preview mode) */}
+        {mode !== 'preview' && <AssetsPanel slug={slug} client={client} mode={mode} />}
       </div>
 
       {/* Bottom status bar */}

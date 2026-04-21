@@ -112,7 +112,7 @@ export class GitHubClient {
     });
   }
 
-  async uploadBinary(path: string, file: File, message: string): Promise<void> {
+  async uploadBinary(path: string, file: File, message: string): Promise<{ sha: string }> {
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer);
     let binary = '';
@@ -121,13 +121,17 @@ export class GitHubClient {
     }
     const cleanBase64 = btoa(binary);
 
-    await this.request(`${BASE_URL}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        message,
-        content: cleanBase64,
-        branch: this.config.branch,
-      }),
-    });
+    const result = await this.request<{ content: { sha: string } }>(
+      `${BASE_URL}/repos/${this.config.owner}/${this.config.repo}/contents/${path}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          message,
+          content: cleanBase64,
+          branch: this.config.branch,
+        }),
+      }
+    );
+    return { sha: result.content.sha };
   }
 }

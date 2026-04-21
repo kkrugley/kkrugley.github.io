@@ -147,6 +147,10 @@ function parseObjectOrArray(lines: string[], startIndex: number, baseIndent: num
     } else if (valuePart === '{}') {
       obj[key] = {};
       i++;
+    } else if (valuePart === '|' || valuePart === '>') {
+      const { value, consumed } = parseBlockScalar(lines, i + 1, indent + 2, valuePart[0]);
+      obj[key] = value;
+      i += consumed + 1;
     } else {
       obj[key] = parseScalar(valuePart);
       i++;
@@ -351,9 +355,14 @@ function serializeValue(key: string, value: any, indent: number): string {
   }
   
   if (typeof value === 'string') {
-    if (!value || value.includes('\n') || value.includes(':') || value.includes('#') ||
+    if (value.includes('\n')) {
+      const blockIndent = '  '.repeat(indent + 1);
+      const lines = value.split('\n').map(l => `${blockIndent}${l}`).join('\n');
+      return `${prefix}${key}: |\n${lines}`;
+    }
+    if (!value || value.includes(':') || value.includes('#') ||
         value.includes('"') || value.startsWith(' ') || value.endsWith(' ')) {
-      const escaped = value.replace(/"/g, '\\"');
+      const escaped = value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       return `${prefix}${key}: "${escaped}"`;
     }
     return `${prefix}${key}: ${value}`;

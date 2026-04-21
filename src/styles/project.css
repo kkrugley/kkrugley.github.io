@@ -353,3 +353,68 @@ model-viewer {
 @media (min-width: 769px) and (max-width: 1024px) {
   .project-sidebar { width: 25%; }
 }
+
+.print-link {
+  font-size: 15px;
+  color: #0000EE;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+.print-link:hover { text-decoration: none; }
+.print-link:active { color: #FF0000; }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 16mm 18mm;
+  }
+
+  /* Скрываем весь body */
+  body > * { display: none !important; }
+
+  /* Показываем только нужную цепочку */
+  body > .project-page { display: block !important; }
+  .project-container { display: block !important; }
+  .project-columns { display: block !important; }
+  .project-content { display: block !important; }
+  .cs-template { display: block !important; max-width: 100% !important; }
+
+  /* Скрываем всё лишнее внутри контейнера */
+  .project-page header,
+  .project-sidebar,
+  .project-gallery,
+  .modal-overlay,
+  .model-overlay,
+  footer { display: none !important; }
+
+  /* Скрываем разделитель между галереей и колонками */
+  .project-container > hr { display: none !important; }
+
+  body { background: white !important; }
+  .project-container { padding: 0 !important; max-width: 100% !important; }
+
+  /* Все изображения вписываются в ширину */
+  .cs-template img,
+  .cs-hero { max-width: 100% !important; height: auto !important; }
+
+  /* Гриды адаптируем под ширину A4 */
+  .cs-two-col,
+  .cs-three-col,
+  .cs-detail-grid,
+  .cs-final-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .cs-three-col { grid-template-columns: 1fr 1fr 1fr !important; }
+
+  /* Плейсхолдеры — убираем лишнюю высоту */
+  .cs-ph { min-height: 60px !important; height: auto !important; }
+  .cs-hero { height: 160px !important; }
+  .cs-three-col .cs-ph { height: 100px !important; }
+  .cs-final-main { height: 140px !important; }
+
+  /* Разрывы страниц */
+  .cs-div { page-break-after: auto; border-top: 1px solid #ddd !important; }
+  section { page-break-inside: avoid; }
+}
