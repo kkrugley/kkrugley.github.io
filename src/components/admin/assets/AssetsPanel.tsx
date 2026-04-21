@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { GitHubClient } from '../auth/GitHubClient';
+import { useIsMobile } from '../utils/useIsMobile';
 
 type EditorMode = 'visual' | 'code' | 'preview';
 
@@ -59,6 +60,7 @@ function renameFile(file: File, newName: string): File {
 }
 
 export function AssetsPanel({ slug, client, mode }: AssetsPanelProps) {
+  const isMobile = useIsMobile();
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [loadingExisting, setLoadingExisting] = useState(true);
   const [uploading, setUploading] = useState<string | null>(null);
@@ -175,7 +177,7 @@ export function AssetsPanel({ slug, client, mode }: AssetsPanelProps) {
   }, [mode]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: 280, borderLeft: '1px solid #e2e8f0', background: '#f8fafc', flexShrink: 0, position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: isMobile ? '100%' : 280, borderLeft: isMobile ? 'none' : '1px solid #e2e8f0', borderTop: isMobile ? '1px solid #e2e8f0' : 'none', background: '#f8fafc', flexShrink: 0, position: 'relative' }}>
       {/* Header */}
       <div style={{ padding: '8px 12px', background: '#ffffff', borderBottom: '1px solid #e2e8f0', fontSize: 10, fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Assets

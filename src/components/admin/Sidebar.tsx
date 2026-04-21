@@ -15,6 +15,7 @@ interface SidebarProps {
   onNewProject: () => void;
   onDisconnect: () => void;
   refreshKey?: number;
+  onClose?: () => void;
 }
 
 function filterProjects(tree: { path: string; type: string }[], contentPath: string): Project[] {
@@ -29,11 +30,13 @@ function filterProjects(tree: { path: string; type: string }[], contentPath: str
     .sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
-export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, onNewProject, onDisconnect, refreshKey }: SidebarProps) {
+export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, onNewProject, onDisconnect, refreshKey, onClose }: SidebarProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+
+  const isMobileDrawer = !!onClose;
 
   const fetchProjects = useCallback(async () => {
     setLoading(true);
@@ -58,9 +61,9 @@ export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, 
 
   return (
     <div style={{
-      width: '20%',
-      minWidth: 180,
-      maxWidth: 280,
+      width: isMobileDrawer ? '100%' : '20%',
+      minWidth: isMobileDrawer ? undefined : 180,
+      maxWidth: isMobileDrawer ? undefined : 280,
       background: '#ffffff',
       borderRight: '1px solid #e2e8f0',
       display: 'flex',
@@ -81,6 +84,15 @@ export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, 
           >
             ↺
           </button>
+          {isMobileDrawer && (
+            <button
+              onClick={onClose}
+              title="Close"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#94a3b8', padding: '0 2px', lineHeight: 1 }}
+            >
+              ×
+            </button>
+          )}
         </div>
       </div>
 
@@ -113,7 +125,7 @@ export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, 
               key={p.slug}
               onClick={() => onSelectFile(p.path)}
               style={{
-                padding: '6px 10px',
+                padding: isMobileDrawer ? '10px 14px' : '6px 10px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -122,7 +134,7 @@ export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, 
                 borderLeft: isActive ? '2px solid #3b82f6' : '2px solid transparent',
                 color: isActive ? '#1d4ed8' : '#64748b',
                 fontWeight: isActive ? 500 : 400,
-                fontSize: 11,
+                fontSize: isMobileDrawer ? 13 : 11,
               }}
             >
               <span style={{ color: isActive ? '#3b82f6' : '#cbd5e1', fontSize: 9 }}>◆</span>
@@ -141,13 +153,13 @@ export function Sidebar({ client, owner, contentPath, activeFile, onSelectFile, 
       <div style={{ padding: 8, borderTop: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', gap: 6 }}>
         <button
           onClick={onNewProject}
-          style={{ background: '#3b82f6', color: '#ffffff', border: 'none', borderRadius: 5, padding: '6px 8px', fontSize: 10, fontWeight: 500, cursor: 'pointer' }}
+          style={{ background: '#3b82f6', color: '#ffffff', border: 'none', borderRadius: 5, padding: isMobileDrawer ? '10px 8px' : '6px 8px', fontSize: isMobileDrawer ? 13 : 10, fontWeight: 500, cursor: 'pointer' }}
         >
           + Новый проект
         </button>
         <button
           onClick={onDisconnect}
-          style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 10, cursor: 'pointer', padding: '2px 0' }}
+          style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: isMobileDrawer ? 12 : 10, cursor: 'pointer', padding: '2px 0' }}
         >
           Disconnect
         </button>
