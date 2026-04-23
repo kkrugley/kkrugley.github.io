@@ -206,17 +206,15 @@ const year = new Date().getFullYear();
                 <span class="cs-num">05</span>
                 <h3 class="cs-section-title">Final Design</h3>
               </div>
-              <div class="cs-final-grid">
-                <MediaSlot
-                  client:load
-                  media={data.final?.main}
-                  className="cs-ph cs-final-main"
-                  imgStyle={{ width: '100%', objectFit: 'cover', borderRadius: '6px' }}
-                />
-                <div class="cs-final-side">
-                  <MediaSlot client:load media={data.final?.detail} className="cs-ph" />
-                  <MediaSlot client:load media={data.final?.context} className="cs-ph" />
-                </div>
+              <div class="cs-three-col">
+                {[data.final?.main, data.final?.detail, data.final?.context].map((media: unknown) => (
+                  <MediaSlot
+                    client:load
+                    media={media as any}
+                    className="cs-ph"
+                    style={{ minHeight: '120px' }}
+                  />
+                ))}
               </div>
             </section>
 
